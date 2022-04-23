@@ -4,19 +4,12 @@ require_once '../models/UsersModel.php';
 $act = !empty($_GET["action"]) ? $_GET["action"] : null;
 
 switch ($act) {
-    case "create_user":
-        $result = $user_model->create_users($_POST);
-        $res = [
+    case "login_user":
+        echo json_encode([
             "action"  => $_SERVER['REQUEST_URI'],
-            "success" => 1
-        ];
-        if (@$result['error']) {
-            $res['success'] = 0;
-            $res['msg']     = $result['msg'];
-        } else {
-            $res['data'] = $result;
-        }
-        echo json_encode($res);
+            "success" => 1,
+            "data"    => $user_model->create_users($_POST)
+        ]);
         break;
 
     case "update_user":
