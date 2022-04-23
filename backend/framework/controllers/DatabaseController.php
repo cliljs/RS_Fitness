@@ -6,7 +6,7 @@ class DatabaseController
     private $conn = null;
     public function __construct(
         $host    = "127.0.0.1",
-        $db_name = "test_db",
+        $db_name = "fitness_app",
         $user    = "root",
         $pass    = ""
     ) {
@@ -98,7 +98,6 @@ class DatabaseController
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
         }
-
         return false;
     }
 
