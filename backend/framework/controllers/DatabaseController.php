@@ -27,15 +27,12 @@ class DatabaseController
         try {
        
             $stmt = $this->conn->prepare($query);
-
             if ($stmt === false) {
                 throw new Exception("Unable to do prepared statement: " . $query);
             }
-
             if ($params) {
                 $stmt->bind_param(str_repeat('s', count($params)), ...$params);
             }
-
             $stmt->execute();
 
             return $stmt;
@@ -75,7 +72,7 @@ class DatabaseController
     public function delete($query = "", $params = [])
     {
         try {
-            $stmt = $this->execute($query, $params);
+            $stmt = $this->execute("DELETE FROM {$query}", $params);
             $stmt->close();
             return true;
         } catch (Exception $e) {
