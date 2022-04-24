@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.1
+-- version 5.0.4
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 23, 2022 at 04:10 PM
--- Server version: 10.4.21-MariaDB
--- PHP Version: 7.3.31
+-- Generation Time: Apr 24, 2022 at 08:30 AM
+-- Server version: 10.4.17-MariaDB
+-- PHP Version: 7.2.34
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `rs_fitness`
+-- Database: `fitness_app`
 --
 
 -- --------------------------------------------------------
@@ -74,17 +74,17 @@ CREATE TABLE `rs_student_meal` (
 
 CREATE TABLE `rs_users` (
   `id` int(11) NOT NULL,
-  `gmail_address` varchar(100) NOT NULL,
-  `firstname` varchar(50) NOT NULL,
-  `middlename` varchar(50) NOT NULL,
-  `lastname` varchar(50) NOT NULL,
-  `birthdate` date NOT NULL,
-  `gender` enum('Male','Female') NOT NULL,
-  `height` float NOT NULL,
-  `weight` float NOT NULL,
-  `bmi` float NOT NULL,
-  `created_at` datetime NOT NULL,
-  `is_admin` tinyint(1) NOT NULL
+  `gmail_address` varchar(100) DEFAULT NULL,
+  `firstname` varchar(50) DEFAULT NULL,
+  `middlename` varchar(50) DEFAULT NULL,
+  `lastname` varchar(50) DEFAULT NULL,
+  `birthdate` date DEFAULT NULL,
+  `gender` enum('Male','Female') DEFAULT NULL,
+  `height` float DEFAULT NULL,
+  `weight` float DEFAULT NULL,
+  `bmi` float DEFAULT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `is_admin` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -96,7 +96,7 @@ CREATE TABLE `rs_users` (
 CREATE TABLE `rs_workout` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `workout_date` date NOT NULL,
+  `workout_date` date NOT NULL DEFAULT current_timestamp(),
   `calories_burned` float NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
