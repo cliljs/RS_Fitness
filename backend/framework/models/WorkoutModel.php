@@ -16,8 +16,9 @@ class WorkoutModel {
     {
         global $db, $common;
         $arr = [
-            "user_id"           => $_SESSION['id'],
-            "calories_burned"   => $payload['calories_burned'],
+            "user_id"         => $_SESSION['id'],
+            "calories_burned" => $payload['calories_burned'],
+            "description"     => $payload['description'],
         ];
         $fields = $common->get_insert_fields($arr);
         return $db->insert("{$this->base_table} {$fields}", array_values($arr));
