@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 24, 2022 at 08:41 AM
+-- Generation Time: Apr 24, 2022 at 10:50 AM
 -- Server version: 10.4.17-MariaDB
 -- PHP Version: 7.2.34
 
@@ -31,7 +31,7 @@ CREATE TABLE `rs_mealplan` (
   `id` int(11) NOT NULL,
   `plan_name` varchar(60) NOT NULL,
   `plan_category` enum('Breakfast','Brunch','Lunch','Afternoon Snack','Dinner','Midnight Snack') NOT NULL,
-  `plan_picture` varchar(60) NOT NULL,
+  `plan_picture` varchar(255) NOT NULL,
   `created_by` int(11) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -87,16 +87,6 @@ CREATE TABLE `rs_users` (
   `is_admin` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `rs_users`
---
-
-INSERT INTO `rs_users` (`id`, `gmail_address`, `firstname`, `middlename`, `lastname`, `birthdate`, `gender`, `height`, `weight`, `bmi`, `created_at`, `is_admin`) VALUES
-(1, 'calilchristopher052997@gmail.com', 'Calil Christopher', 'null', 'Jaudian', '1997-05-29', 'Male', 180.34, 198.41, 45.21, '2022-04-24 14:31:53', 0),
-(2, 'bry@gmail.com', 'Bryan Nikko', 'Vitug', 'Barata', '1994-02-11', 'Male', 182.88, 176.37, 40.2, '2022-04-24 14:31:53', 0),
-(3, 'patrick@gmail.com', 'Ben Patrick', 'Vitug', 'Chua', '2004-02-16', 'Male', 165.1, 154.324, 30.8, '2022-04-24 14:31:53', 0),
-(4, 'hello@gmail.com', 'J', '', 'Doe', '1998-05-22', 'Male', 175.5, 110.8, 52.5, '2022-04-24 14:32:02', 0);
-
 -- --------------------------------------------------------
 
 --
@@ -111,15 +101,6 @@ CREATE TABLE `rs_workout` (
   `description` varchar(100) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `rs_workout`
---
-
-INSERT INTO `rs_workout` (`id`, `user_id`, `workout_date`, `calories_burned`, `description`, `created_at`) VALUES
-(3, 4, '2022-04-24', 171.1, 'Hello', '2022-04-24 06:35:24'),
-(4, 4, '2022-04-24', 171.1, 'Hellox', '2022-04-24 06:36:31'),
-(5, 4, '2022-04-24', 171.1, 'Helloxzzz', '2022-04-24 06:36:33');
 
 --
 -- Indexes for dumped tables
@@ -181,13 +162,13 @@ ALTER TABLE `rs_student_meal`
 -- AUTO_INCREMENT for table `rs_users`
 --
 ALTER TABLE `rs_users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `rs_workout`
 --
 ALTER TABLE `rs_workout`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

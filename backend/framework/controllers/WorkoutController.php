@@ -1,7 +1,7 @@
 <?php
 require_once '../models/WorkoutModel.php';
 $act = !empty($_GET["action"]) ? $_GET["action"] : null;
-// DI KO PA NATETEST TO
+
 switch ($act) {
     case "create_workout":
         echo json_encode([
