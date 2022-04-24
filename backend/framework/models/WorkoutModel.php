@@ -32,5 +32,11 @@ class WorkoutModel {
     {
         return $this->data_helper->remove_row($pk);
     }
+
+    public function get_user_workout()
+    {
+        global $db, $common;
+        return $db->get_list("SELECT * FROM {$this->base_table} WHERE user_id = ?", [$_SESSION['id']]);
+    }
 }
 $workout_model = new WorkoutModel();

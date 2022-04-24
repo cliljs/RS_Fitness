@@ -27,6 +27,14 @@ switch ($act) {
         ]);
         break;
         
+    case "get_user_workout":
+        echo json_encode([
+            "action"  => $_SERVER['REQUEST_URI'],
+            "success" => 1,
+            "data"    => $workout_model->get_user_workout()
+        ]);
+        break;
+        
     default:
         break;
 }
