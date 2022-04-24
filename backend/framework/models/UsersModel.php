@@ -37,9 +37,11 @@ class UsersModel {
             ];
             $fields  = $common->get_insert_fields($arr);
             $last_id = $db->insert("{$this->base_table} {$fields}", array_values($arr));
-            return $last_id > 0 ? $this->data_helper->get_row_details($last_id) : false;
+            $_SESSION = $this->data_helper->get_row_details($last_id);
+            return $last_id > 0 ? $_SESSION : false;
         }
-        return $has_user;
+        $_SESSION = $has_user;
+        return $_SESSION;
     }
 
     public function update_user($payload = [], $pk = null)

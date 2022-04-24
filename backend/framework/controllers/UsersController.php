@@ -22,11 +22,19 @@ switch ($act) {
         break;
 
     case "remove_user":
-        // CHANGE KO PA VALIDATION NETO
         echo json_encode([
             "action"  => $_SERVER['REQUEST_URI'],
             "success" => 1,
             "data"    => $user_model->remove_user($_GET['id'])
+        ]);
+        break;
+    
+    // GET 1 ROW FROM DB
+    case "get_user":
+        echo json_encode([
+            "action"  => $_SERVER['REQUEST_URI'],
+            "success" => 1,
+            "data"    => $user_model->data_helper->get_row_details($_GET['id'])
         ]);
         break;
 
