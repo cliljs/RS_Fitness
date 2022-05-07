@@ -51,8 +51,8 @@
           <div class="row p-2">
             <div class="col-md-12 col-lg-6">
               <div class="form-group">
-                <label for="meal_picture">Meal picture</label>
-                <img class="img-fluid" id="imgPicture" name="imgPicture">
+
+                <img class="img-fluid" id="imgPicture" name="imgPicture" src="https://via.placeholder.com/500">
                 <div class="input-group">
                   <div class="custom-file">
                     <input type="file" accept=".jpg, .png, .jpeg, .bmp" class="custom-file-input" id="meal_picture" name="meal_picture" onchange="loadFile(event)">
@@ -96,17 +96,37 @@
               <div class="form-group row">
                 <h3>Meal Ingredients</h3>
               </div>
+              <div class="row p-1">
+                <div class="col-sm-12 col-md-8">
+                  <div class="form-group row">
+                    <label>Ingredient Name</label>
+                    <input class="form-control" type="text" id="ingredient_name" name="ingredient_name" required>
+                  </div>
+                </div>
+                <div class="col-sm-12 col-md-4">
+                  <div class="form-group row">
+                    <label>Calories</label>
+                    <input class="form-control" type="number" id="calorie" name="calorie" required>
+                  </div>
+                </div>
+              </div>
 
-              <div class="form-group row">
-                <label>Ingredient Name</label>
-                <input class="form-control" type="text" id="ingredient_name" name="ingredient_name" required>
-              </div>
-              <div class="form-group row">
-                <label>Calories</label>
-                <input class="form-control" type="number" id="calorie" name="calorie" required>
-              </div>
-              <div class="form-group row">
+
+              <div class="row p-1">
                 <button id="btnAddIngredients" class="btn btn-info">Add to list</button>
+              </div>
+              <div class="form-group row mt-2">
+                <table class="table table-hover table-striped">
+                  <thead>
+                    <tr>
+                      <th>Ingredient Name</th>
+                      <th>Calories</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tblIngredientsBody">
+
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>

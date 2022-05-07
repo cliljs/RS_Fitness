@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.0.4
+-- version 5.1.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 24, 2022 at 10:50 AM
--- Server version: 10.4.17-MariaDB
--- PHP Version: 7.2.34
+-- Generation Time: May 07, 2022 at 04:04 PM
+-- Server version: 10.4.21-MariaDB
+-- PHP Version: 7.3.31
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -30,6 +30,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `rs_mealplan` (
   `id` int(11) NOT NULL,
   `plan_name` varchar(60) NOT NULL,
+  `plan_description` varchar(100) NOT NULL,
   `plan_category` enum('Breakfast','Brunch','Lunch','Afternoon Snack','Dinner','Midnight Snack') NOT NULL,
   `plan_picture` varchar(255) NOT NULL,
   `created_by` int(11) NOT NULL,
@@ -86,6 +87,14 @@ CREATE TABLE `rs_users` (
   `created_at` datetime DEFAULT current_timestamp(),
   `is_admin` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `rs_users`
+--
+
+INSERT INTO `rs_users` (`id`, `gmail_address`, `firstname`, `middlename`, `lastname`, `birthdate`, `gender`, `height`, `weight`, `bmi`, `created_at`, `is_admin`) VALUES
+(3, 'barata.bryannikko.dev@gmail.com', 'kapares', 'in the haus', 'romnick', '1994-02-11', 'Male', 100, 200, 0, '2022-05-07 15:00:17', 0),
+(4, 'barata.bryannikko@gmail.com', 'Bryan Nikko', '', 'Barata', '1994-02-11', 'Male', 186, 198.416, 26.0145, '2022-05-07 19:12:23', 1);
 
 -- --------------------------------------------------------
 
@@ -162,7 +171,7 @@ ALTER TABLE `rs_student_meal`
 -- AUTO_INCREMENT for table `rs_users`
 --
 ALTER TABLE `rs_users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `rs_workout`
