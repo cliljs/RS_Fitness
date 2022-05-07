@@ -48,10 +48,9 @@ class UsersModel
             $_SESSION['is_admin'] = 0;
             $_SESSION['validated'] = 1;
             $_SESSION['user_fullname'] = $payload['firstname'] . ' ' . $payload['middlename'] . ' '  . $payload['lastname'];
-
+            $_SESSION['id'] = $last_id;
             return $last_id > 0 ? true : false;
         }
-        //$_SESSION = $has_user;
         return false;
     }
 

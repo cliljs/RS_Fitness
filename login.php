@@ -35,6 +35,7 @@ if (isset($_GET['code'])) {
     if (empty($result)) {
         header('Location: register.php');
     } else {
+        $_SESSION['id'] = $result['id'];
         $_SESSION['user_lastname'] =  $result['lastname'];
         $_SESSION['user_firstname'] =  $result['firstname'];
         $_SESSION['user_middlename'] =  $result['middlename'];

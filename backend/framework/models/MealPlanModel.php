@@ -17,27 +17,35 @@ class MealPlanModel
     public function create_mealplan($payload = [], $file = [])
     {
         global $db, $common, $ingredient_model;
-        
+        unset($payload['ingredient_name']);
+        unset($payload['calorie']);
+       
         $arr = [
             "plan_name"        => $payload['plan_name'],
             "plan_description" => $payload['plan_description'],
             "plan_category"    => $payload['plan_category'],
-            "plan_picture"     => !empty($file) ? $common->upload($file) : null,
+            "plan_picture"     => $file['error']!= 4 ? $common->upload($file) : null,
             "created_by"       => $_SESSION['id'],
         ];
 
         $fields = $common->get_insert_fields($arr);
         $last_id = $db->insert("{$this->base_table} {$fields}", array_values($arr));
+        // print_r((array)$payload['ingredients']);
+        if (!empty($payload['ingredients'])) {
+            $arr = json_decode($payload['ingredients'], true);
 
-        foreach ($payload['ingredients'] as $key => $ingredient) {
-            $ingredient_model->create_ingredient([
-                "meal_id"         => $last_id,
-                "ingredient_name" => $ingredient['name'],
-                "calories"        => $ingredient['calories']
-            ]);
+            foreach ($arr as $key => $ingredient) {
+
+                $ingredient_model->create_ingredient([
+                    "meal_id"         => $last_id,
+                    "ingredient_name" => $ingredient['name'],
+                    "calories"        => $ingredient['calories']
+                ]);
+            }
         }
 
-        return $last_id; 
+
+        return $last_id;
     }
 
     public function update_mealplan($pk, $payload, $file)
@@ -61,7 +69,7 @@ class MealPlanModel
     public function get_user_mealplan()
     {
         global $db;
-        return $db->get_list("SELECT * FROM {$this->base_table} WHERE created_by = ?", [$_SESSION['id']]);
+        return $db->get_list("SELECT mp.*,(Select SUM(calories) from rs_meal_ingredients where meal_id = mp.id) as total_calories FROM {$this->base_table} mp ORDER BY plan_name,plan_category", []);
     }
 }
 $mealplan_model = new MealPlanModel();

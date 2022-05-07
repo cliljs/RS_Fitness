@@ -255,7 +255,7 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
   <!-- Custom Theme Scripts -->
   <script src="frontend/build/js/custom.min.js"></script>
   <script src="frontend/plugins/sweetalert2/sweetalert2.min.js"></script>
-  <!-- <script src="frontend/build/js/common.js"></script> -->
+  <script src="frontend/build/js/common.js"></script>
 
   <script>
     $(function() {
@@ -270,8 +270,92 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
           "responsive": true
         });
       } else if (me == "mealmgmt") {
+        loadAllMeals();
+        let ingredients_arr = [];
         $("#meal_picture").on("change", function() {
           $(".custom-file-label").html("Image Selected");
+        });
+        $('#btnAddIngredients').on('click', function() {
+          let ingName = $('#ingredient_name').val();
+          let ingCal = $('#calorie').val();
+
+          $('#tblIngredientsBody').append('<tr><td>' + ingName + '</td><td>' + ingCal + '</td><td><button class = "btnRemoveIngredient btn btn-danger btn-sm">Remove</button></td></tr>');
+          $('#ingredient_name').val('');
+          $('#calorie').val('');
+          ingredients_arr.push({
+            name: ingName,
+            calories: ingCal
+          });
+        });
+        $('body').on('click', '.btnRemoveIngredient', function() {
+
+          let row = $(this).closest('tr');
+          let tditem = $(this)
+            .closest('tr')
+            .children('td')
+            .html();
+          ingredients_arr.splice(ingredients_arr.findIndex(el => el.vip == tditem), 1);
+          row.remove();
+        });
+        $('body').on('click', '.btnMealMgmtDelete', function() {
+          let dataID = $(this).attr('data-id');
+          let thisButton = $(this);
+          Swal.fire({
+            allowOutsideClick: false,
+            title: 'Meal Management',
+            text: 'Are you sure you want to delete this meal plan?',
+            icon: 'info',
+            showDenyButton: false,
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete',
+            denyButtonText: 'No',
+          }).then((result) => {
+
+            if (result.isConfirmed) {
+              fireAjax('MealPlanController.php?action=remove_mealplan&id=' + dataID, '', false).then(function(data) {
+                console.log(data);
+                let objSuccess = $.parseJSON(data.trim()).success;
+                var table = $('#tblMealMgmt').DataTable({
+                  "paging": true,
+                  "ordering": false,
+                  "info": true,
+                  "autoWidth": true,
+                  "responsive": true
+                });
+                table
+                  .row(thisButton.parents('tr'))
+                  .remove()
+                  .draw();
+
+                fireSwal('Meal Management', 'Meal plan deleted successfully', 'success');
+              }).catch(function(err) {
+                console.log(err);
+                fireSwal('Meal Management', 'Failed to delete meal plan. Please try again', 'error');
+              })
+            }
+          })
+        });
+        $('#mdlMealRegister').on('submit', function(e) {
+          e.preventDefault();
+
+          let json_arr = JSON.stringify(ingredients_arr);
+
+          let fd = new FormData(this);
+          fd.append('ingredients', json_arr);
+          fireAjax('MealPlanController.php?action=create_mealplan', fd, true).then(function(data) {
+            console.log(data);
+            let objSuccess = $.parseJSON(data.trim()).success;
+            loadAllMeals();
+            fireSwal('Meal Management', 'Meal plan registered successfully', 'success');
+            $('#mdlMealRegister').trigger('reset');
+            $('#tblIngredientsBody').empty();
+            $('#mealmodal').modal('hide');
+          }).catch(function(err) {
+            console.log(err);
+            fireSwal('Meal Management', 'Failed to register meal plan. Please try again', 'error');
+
+          })
+
         });
       }
     });
@@ -279,9 +363,36 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
       var output = document.getElementById('imgPicture');
       output.src = URL.createObjectURL(event.target.files[0]);
       output.onload = function() {
-        URL.revokeObjectURL(output.src) 
+        URL.revokeObjectURL(output.src)
       }
     };
+
+    function loadAllMeals() {
+      fireAjax('MealPlanController.php?action=get_user_mealplan', '', false).then(function(data) {
+        console.log(data);
+        let objData = $.parseJSON(data.trim()).data;
+        let retval = '';
+        $.each(objData, function(k, v) {
+          retval += '<tr>';
+          retval += '<td><img width="100" height="100" src="' + image_url + v.plan_picture + '" alt="meal"></td>'
+          retval += '<td>' + v.plan_name + '</td>';
+          retval += '<td>' + v.plan_description + '</td>';
+          retval += '<td>' + v.plan_category + '</td>';
+          retval += '<td>' + v.total_calories + '</td>';
+          retval += '<td class="text-right">';
+          retval += '<button class="btnMealMgmtEdit btn btn-primary btn-sm" data-id = "' + v.id + '"><i class="fa fa-edit"></i>&nbsp;Edit</button>';
+          retval += '<button class="btnMealMgmtDelete btn btn-danger btn-sm" data-id = "' + v.id + '"><i class="fa fa-trash"></i>&nbsp;Delete</button>';
+          retval += '</td>';
+          retval += '</tr>';
+        });
+
+        $('#tblMealMgmtBody').html(retval);
+        $('#tblMealMgmt').DataTable();
+      }).catch(function(err) {
+        console.log(err);
+        fireSwal('Meal Management', 'Failed to retrieve list of meals. Please reload the page', 'error');
+      })
+    }
 
     function getUrlVars() {
       let vars = [],

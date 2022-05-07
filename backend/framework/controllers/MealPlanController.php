@@ -9,7 +9,8 @@ $act = !empty($_GET["action"]) ? $_GET["action"] : null;
 switch ($act) {
 
     case "create_mealplan":
-        $files = !empty($_FILES) ? $_FILES[0] : [];
+        //print_r($_FILES);
+        $files = !empty($_FILES) ? $_FILES['meal_picture'] : [];
         echo json_encode(
             [
                 "action"  => $_SERVER['REQUEST_URI'],

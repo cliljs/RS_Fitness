@@ -35,7 +35,7 @@ class Helpers {
         $fileTmpName   = $file['tmp_name'];
 
         $tick = strtotime(date('Y-m-d H:i:s'));
-        
+        $partial_name = $path_parts['filename'].'_'. $tick . '.' . $path_parts['extension'];
         $uploadPath = $uploadDirectory . $path_parts['filename'].'_'. $tick . '.' . $path_parts['extension']; 
         if ($fileSize > 4000000) {
           $errors['has_error'] = 1;
@@ -46,7 +46,7 @@ class Helpers {
         $didUpload = move_uploaded_file($fileTmpName, $uploadPath);
 
         if ($didUpload) {
-          return  $uploadPath;
+          return  $partial_name;
         } else {
            return [
              "has_error" => true,

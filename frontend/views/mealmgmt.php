@@ -21,18 +21,8 @@
             <th></th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td><img width="50" height="50" src="https://panlasangpinoy.com/wp-content/uploads/2019/03/Beef-Pares-500x485.jpg" alt="meal"></td>
-            <td>Fortune</td>
-            <td>Awts wala</td>
-            <td>Lunch</td>
-            <td>300</td>
-            <td class="text-right">
-              <button class="btn btn-primary btn-sm"><i class="fa fa-edit"></i>&nbsp;Edit</button>
-              <button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i>&nbsp;Delete</button>
-            </td>
-          </tr>
+        <tbody id = "tblMealMgmtBody">
+       
 
         </tbody>
       </table>
@@ -42,7 +32,7 @@
 
 <div class="modal fade" id="mealmodal" tabindex="-1" role="dialog" aria-labelledby="mealmodallabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
-    <form id="mdlMeal">
+    <form id="mdlMealRegister">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="mealmodallabel">Add New Meal</h5>
@@ -97,23 +87,28 @@
                 <h3>Meal Ingredients</h3>
               </div>
               <div class="row p-1">
-                <div class="col-sm-12 col-md-8">
+                <div class="col-sm-12 col-md-7">
                   <div class="form-group row">
                     <label>Ingredient Name</label>
-                    <input class="form-control" type="text" id="ingredient_name" name="ingredient_name" required>
+                    <input class="form-control" type="text" id="ingredient_name" name="ingredient_name">
                   </div>
+                </div>
+                <div class="col-sm-12 col-md-1 p-1">
+
                 </div>
                 <div class="col-sm-12 col-md-4">
                   <div class="form-group row">
                     <label>Calories</label>
-                    <input class="form-control" type="number" id="calorie" name="calorie" required>
+                    <input class="form-control" type="number" id="calorie" name="calorie">
                   </div>
                 </div>
               </div>
 
 
-              <div class="row p-1">
-                <button id="btnAddIngredients" class="btn btn-info">Add to list</button>
+              <div class="row">
+                <div class="col-md-12 text-right" style = "padding-right:0px;">
+                  <a id="btnAddIngredients" class="btn btn-info" href = "Javascript:void(0)">Add to list</a>
+                </div>
               </div>
               <div class="form-group row mt-2">
                 <table class="table table-hover table-striped">
@@ -121,6 +116,7 @@
                     <tr>
                       <th>Ingredient Name</th>
                       <th>Calories</th>
+                      <th></th>
                     </tr>
                   </thead>
                   <tbody id="tblIngredientsBody">
@@ -133,7 +129,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Save changes</button>
+          <button type="submit" class="btn btn-primary">Register</button>
         </div>
       </div>
     </form>
