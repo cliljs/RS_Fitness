@@ -29,6 +29,14 @@ switch ($act) {
         ]);
         break;
     
+    case "logout_user":
+        echo json_encode([
+            "action"  => $_SERVER['REQUEST_URI'],
+            "success" => 1,
+            "data"    => session_destroy()
+        ]);
+        break;
+    
     // GET 1 ROW FROM DB
     case "get_user":
         echo json_encode([

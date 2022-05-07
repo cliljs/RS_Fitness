@@ -2,6 +2,7 @@
 
 require_once '../../autoload.php';
 require_once CONTROLLER_PATH . 'DataController.php';
+require_once MODEL_PATH . 'MealIngredientsModel.php';
 
 class MealPlanModel
 {
@@ -15,15 +16,28 @@ class MealPlanModel
 
     public function create_mealplan($payload = [], $file = [])
     {
-        global $db, $common;
+        global $db, $common, $ingredient_model;
+        
         $arr = [
-            "plan_name"     => $payload['plan_name'],
-            "plan_category" => $payload['plan_category'],
-            "plan_picture"  => !empty($file) ? $common->upload($file) : null,
-            "created_by"    => $_SESSION['id'],
+            "plan_name"        => $payload['plan_name'],
+            "plan_description" => $payload['plan_description'],
+            "plan_category"    => $payload['plan_category'],
+            "plan_picture"     => !empty($file) ? $common->upload($file) : null,
+            "created_by"       => $_SESSION['id'],
         ];
+
         $fields = $common->get_insert_fields($arr);
-        return $db->insert("{$this->base_table} {$fields}", array_values($arr)); 
+        $last_id = $db->insert("{$this->base_table} {$fields}", array_values($arr));
+
+        foreach ($payload['ingredients'] as $key => $ingredient) {
+            $ingredient_model->create_ingredient([
+                "meal_id"         => $last_id,
+                "ingredient_name" => $ingredient['name'],
+                "calories"        => $ingredient['calories']
+            ]);
+        }
+
+        return $last_id; 
     }
 
     public function update_mealplan($pk, $payload, $file)
