@@ -25,7 +25,7 @@ class DatabaseController
     private function execute($query = "", $params = [])
     {
         try {
-       
+          
             $stmt = $this->conn->prepare($query);
             if ($stmt === false) {
                 throw new Exception("Unable to do prepared statement: " . $query);
@@ -33,6 +33,7 @@ class DatabaseController
             if ($params) {
                 $stmt->bind_param(str_repeat('s', count($params)), ...$params);
             }
+      
             $stmt->execute();
 
             return $stmt;
@@ -102,6 +103,7 @@ class DatabaseController
     public function get_list($query = "", $params = [])
     {
         try {
+        
             $stmt = $this->execute($query, $params);
             $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
             $stmt->close();

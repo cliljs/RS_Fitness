@@ -15,9 +15,10 @@ class MealPlanModel
     }
 
     public function get_meal_by_category($meal_type){
-        global $db, $common;
+        global $db;
         if(isset($meal_type['type'])){
-            $result = $db->get_list("Select * from {$this->base_table} where plan_category = ? order by plan_name",[$meal_type]);
+            $type = $meal_type['type'];
+            $result = $db->get_list("Select * from {$this->base_table} where plan_category = ? order by plan_name",[$type]);
         } else{
             $result = $db->get_list("Select * from {$this->base_table} order by plan_name",[]);
         }

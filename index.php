@@ -458,6 +458,7 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
       fireAjax('MealPlanController.php?action=get_meal_by_category', '', false).then(function(data) {
         console.log(data.trim());
         let objData = $.parseJSON(data.trim()).data;
+        let retval = '';
         $.each(objData, function(k, v) {
           retval += '<tr>';
           retval += '<td>' + '<img width="70" height="70" src="' + image_url + v.plan_picture + '" alt="meal">' + '</td>';
@@ -497,27 +498,27 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
             retvalPC += '<div class="carousel-item">';
             retvalPC += '<div class = "row">';
           }
-          retval += '<div class="col-md-3">';
-          retval += '<div class="product-block">';
-          retval += '<img class="d-block w-100 mb-2" src="https://via.placeholder.com/800x400" alt="Product">';
-          retval += '<div class="product-info">';
-          retval += '  <h4>Meal Name</h4>';
-          retval += '  <p><button class="btn btn-outline-secondary btn-sm">200 Calories</button></p>';
-          retval += '  <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut at ex sed neque luctus pulvinar in quis augue. Integer eget neque sollicitudin, accumsan augue id, volutpat lectus.</p>';
-          retval += '  <div class="row">';
-          retval += '    <div class="col-md-6">';
-          retval += '      <button class="btn btn-sm btn-success">Add to daily meal</button>';
-          retval += '    </div>';
-          retval += '    <div class="col-md-6">';
-          retval += '      <button class="btn btn-sm btn-danger">More Details</button>';
-          retval += '    </div>';
-          retval += '  </div>';
-          retval += '</div>';
-          retval += '</div>';
-          retval += '</div>';
+          retvalPC += '<div class="col-md-3">';
+          retvalPC += '<div class="product-block">';
+          retvalPC += '<img class="d-block w-100 mb-2" src="https://via.placeholder.com/800x400" alt="Product">';
+          retvalPC += '<div class="product-info">';
+          retvalPC += '  <h4>Meal Name</h4>';
+          retvalPC += '  <p><button class="btn btn-outline-secondary btn-sm">200 Calories</button></p>';
+          retvalPC += '  <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut at ex sed neque luctus pulvinar in quis augue. Integer eget neque sollicitudin, accumsan augue id, volutpat lectus.</p>';
+          retvalPC += '  <div class="row">';
+          retvalPC += '    <div class="col-md-6">';
+          retvalPC += '      <button class="btn btn-sm btn-success">Add to daily meal</button>';
+          retvalPC += '    </div>';
+          retvalPC += '    <div class="col-md-6">';
+          retvalPC += '      <button class="btn btn-sm btn-danger">More Details</button>';
+          retvalPC += '    </div>';
+          retvalPC += '  </div>';
+          retvalPC += '</div>';
+          retvalPC += '</div>';
+          retvalPC += '</div>';
           if (tempCount == 4) {
-            retval += '</div>';
-            retval += '</div>';
+            retvalPC += '</div>';
+            retvalPC += '</div>';
             tempCount = 1;
           }
 
