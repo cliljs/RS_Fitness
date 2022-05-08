@@ -486,10 +486,40 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
       fireAjax('MealPlanController.php?action=get_meal_by_category&type=' + meal_type, '', false).then(function(data) {
         console.log(data);
         let objData = $.parseJSON(data.trim()).data;
-        let retval = '';
+        let retvalMobile = '';
         let retvalPC = '';
-
-        $.each(objData,function(k,v){
+        let tempCount = 1;
+        $.each(objData, function(k, v) {
+          if (tempCount == 1 && retvalPC == '') {
+            retvalPC += '<div class="carousel-item active">';
+            retvalPC += '<div class = "row">';
+          } else if (tempCount == 1 && retvalPC != '') {
+            retvalPC += '<div class="carousel-item">';
+            retvalPC += '<div class = "row">';
+          }
+          retval += '<div class="col-md-3">';
+          retval += '<div class="product-block">';
+          retval += '<img class="d-block w-100 mb-2" src="https://via.placeholder.com/800x400" alt="Product">';
+          retval += '<div class="product-info">';
+          retval += '  <h4>Meal Name</h4>';
+          retval += '  <p><button class="btn btn-outline-secondary btn-sm">200 Calories</button></p>';
+          retval += '  <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut at ex sed neque luctus pulvinar in quis augue. Integer eget neque sollicitudin, accumsan augue id, volutpat lectus.</p>';
+          retval += '  <div class="row">';
+          retval += '    <div class="col-md-6">';
+          retval += '      <button class="btn btn-sm btn-success">Add to daily meal</button>';
+          retval += '    </div>';
+          retval += '    <div class="col-md-6">';
+          retval += '      <button class="btn btn-sm btn-danger">More Details</button>';
+          retval += '    </div>';
+          retval += '  </div>';
+          retval += '</div>';
+          retval += '</div>';
+          retval += '</div>';
+          if (tempCount == 4) {
+            retval += '</div>';
+            retval += '</div>';
+            tempCount = 1;
+          }
 
         });
 

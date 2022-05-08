@@ -19,7 +19,7 @@ class MealPlanModel
         if(isset($meal_type['type'])){
             $result = $db->get_list("Select * from {$this->base_table} where plan_category = ? order by plan_name",[$meal_type]);
         } else{
-            $db->get_list("Select * from {$this->base_table} where order by plan_name",[]);
+            $result = $db->get_list("Select * from {$this->base_table} order by plan_name",[]);
         }
         return $result;
     }
