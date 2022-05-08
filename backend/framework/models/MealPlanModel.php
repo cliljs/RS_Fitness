@@ -34,13 +34,13 @@ class MealPlanModel
             "plan_name"        => $payload['plan_name'],
             "plan_description" => $payload['plan_description'],
             "plan_category"    => $payload['plan_category'],
-            "plan_picture"     => $file['error']!= 4 ? $common->upload($file) : null,
+            "plan_picture"     => !empty($file) && $file['error']!= 4 ? $common->upload($file) : null,
             "created_by"       => $_SESSION['id'],
         ];
 
         $fields = $common->get_insert_fields($arr);
         $last_id = $db->insert("{$this->base_table} {$fields}", array_values($arr));
-        // print_r((array)$payload['ingredients']);
+        
         if (!empty($payload['ingredients'])) {
             $arr = json_decode($payload['ingredients'], true);
 
