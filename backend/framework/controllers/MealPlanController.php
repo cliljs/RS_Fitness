@@ -9,7 +9,7 @@ $act = !empty($_GET["action"]) ? $_GET["action"] : null;
 switch ($act) {
 
     case "create_mealplan":
-        //print_r($_FILES);
+
         $files = !empty($_FILES) ? $_FILES['meal_picture'] : [];
         echo json_encode(
             [
@@ -47,6 +47,15 @@ switch ($act) {
                 "action"  => $_SERVER['REQUEST_URI'],
                 "success" => 1,
                 "data"    => $mealplan_model->get_user_mealplan()
+            ]
+        );
+        break;
+    case "get_meal_by_category":
+        echo json_encode(
+            [
+                "action"  => $_SERVER['REQUEST_URI'],
+                "success" => 1,
+                "data"    => $mealplan_model->get_meal_by_category($_GET['type'])
             ]
         );
         break;

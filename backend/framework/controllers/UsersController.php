@@ -11,7 +11,13 @@ switch ($act) {
             "data"    => $user_model->create_users($_POST)
         ]);
         break;
-
+    case "add_other_user":
+        echo json_encode([
+            "action"  => $_SERVER['REQUEST_URI'],
+            "success" => 1,
+            "data"    => $user_model->add_other_user($_POST)
+        ]);
+        break;
     case "update_user":
         // CHANGE KO PA VALIDATION NETO
         echo json_encode([
@@ -28,7 +34,7 @@ switch ($act) {
             "data"    => $user_model->remove_user($_GET['id'])
         ]);
         break;
-    
+
     case "logout_user":
         echo json_encode([
             "action"  => $_SERVER['REQUEST_URI'],
@@ -36,8 +42,8 @@ switch ($act) {
             "data"    => session_destroy()
         ]);
         break;
-    
-    // GET 1 ROW FROM DB
+
+        // GET 1 ROW FROM DB
     case "get_user":
         echo json_encode([
             "action"  => $_SERVER['REQUEST_URI'],
@@ -45,7 +51,13 @@ switch ($act) {
             "data"    => $user_model->data_helper->get_row_details($_GET['id'])
         ]);
         break;
-
+        case "get_all_users":
+            echo json_encode([
+                "action"  => $_SERVER['REQUEST_URI'],
+                "success" => 1,
+                "data"    => $user_model->get_all_users()
+            ]);
+            break;
     default:
         break;
 }

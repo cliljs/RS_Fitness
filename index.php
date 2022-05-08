@@ -1,8 +1,29 @@
 <?php
+date_default_timezone_set('Asia/Manila');
 session_start();
 if (!isset($_SESSION['validated'])) {
   header('Location: login.php');
 }
+$nowDate = date("Y-m-d h:i:sa");
+
+
+$time = date("H:i:s", strtotime($nowDate));
+
+$meal_type = "";
+if ($time >= "06:00:00" && $time < "09:00:00") {
+  $meal_type = "Breakfast";
+} else if ($time >= "09:00:00" && $time < "12:00:00") {
+  $meal_type = "Brunch";
+} else if ($time >= "12:00:00" && $time < "15:00:00") {
+  $meal_type = "Lunch";
+} else if ($time >= "15:00:00" && $time < "18:00:00") {
+  $meal_type = "Afternoon Snack";
+} else if ($time >= "18:00:00" && $time < "21:00:00") {
+  $meal_type = "Dinner";
+} else {
+  $meal_type = "Midnight Snack";
+}
+
 
 $role = ($_SESSION['is_admin'] == 1) ? 'Administrator' : 'Standard User';
 $is_admin = ($_SESSION['is_admin'] == 1) ? true : false;
@@ -15,7 +36,7 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
 
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
+  <meta name="mode" id="mode" content="<?php echo $meal_type; ?>" />
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -47,8 +68,18 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
 
   <link href="frontend/plugins/fullcalendar/dist/fullcalendar.min.css" rel="stylesheet">
   <link href="frontend/plugins/fullcalendar/dist/fullcalendar.print.css" rel="stylesheet" media="print">
-
+  <link href="frontend/plugins/slider/animate.min.css" rel="stylesheet">
   <style>
+    .product-info {
+      padding: 15px !important;
+
+    }
+
+    .product-block {
+
+      border: 1px #2095a5a6 solid !important;
+    }
+
     .site_title {
       line-height: 0px !important;
       height: 25px !important;
@@ -204,6 +235,9 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
           case "profile":
             include "frontend/views/profile.php";
             break;
+          default:
+            include "frontend/views/404.php";
+            break;
         }
 
         ?>
@@ -256,19 +290,20 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
   <script src="frontend/build/js/custom.min.js"></script>
   <script src="frontend/plugins/sweetalert2/sweetalert2.min.js"></script>
   <script src="frontend/build/js/common.js"></script>
+  <script src="frontend/plugins/slider/main.js"></script>
 
   <script>
+    let dtUserMgmt = null,
+      dtMeal = null,
+      dtMealMgmt = null;
     $(function() {
       let me = getUrlVars()['view'];
 
       if (me == "meal") {
-        $('#tblMeals').DataTable({
-          "paging": true,
-          "ordering": false,
-          "info": true,
-          "autoWidth": true,
-          "responsive": true
-        });
+        loadMealList($("meta[name=mode]").attr("content"));
+
+
+        
       } else if (me == "mealmgmt") {
         loadAllMeals();
         let ingredients_arr = [];
@@ -315,14 +350,8 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
               fireAjax('MealPlanController.php?action=remove_mealplan&id=' + dataID, '', false).then(function(data) {
                 console.log(data);
                 let objSuccess = $.parseJSON(data.trim()).success;
-                var table = $('#tblMealMgmt').DataTable({
-                  "paging": true,
-                  "ordering": false,
-                  "info": true,
-                  "autoWidth": true,
-                  "responsive": true
-                });
-                table
+
+                dtMealMgmt
                   .row(thisButton.parents('tr'))
                   .remove()
                   .draw();
@@ -357,6 +386,64 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
           })
 
         });
+      } else if (me == "usermgmt") {
+        loadUsers();
+        $('#frmUserRegister').on('submit', function(e) {
+          e.preventDefault();
+          let fd = new FormData(this);
+          fireAjax('UsersController.php?action=add_other_user', fd, true).then(function(data) {
+            console.log(data);
+            let objData = $.parseJSON(data.trim()).data;
+            if (objData == -1) {
+              fireSwal('User Management', 'Failed to add user. Gmail Address already exists', 'info');
+            } else if (objData == 1) {
+              loadUsers();
+              $('#usermodal').modal('hide');
+              $('#frmUserRegister').trigger('reset');
+              fireSwal('User Management', 'User added successfully', 'success');
+            } else {
+              fireSwal('User Management', 'Failed to add user. Please try again', 'error');
+            }
+          }).catch(function(err) {
+            console.log(err);
+            fireSwal('User Management', 'Failed to add user. Please try again', 'error');
+          })
+        });
+        $('body').on('click', '.btnDeleteUser', function() {
+          let dataID = $(this).attr('data-id');
+          let thisButton = $(this);
+          Swal.fire({
+            allowOutsideClick: false,
+            title: 'User Management',
+            text: 'Are you sure you want to delete this user?',
+            icon: 'info',
+            showDenyButton: false,
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete',
+            denyButtonText: 'No',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              fireAjax('usersController.php?action=remove_user&id=' + dataID, '', false).then(function(data) {
+                console.log(data);
+                let objData = $.parseJSON(data.trim()).data;
+                if (objData != false) {
+                  dtUserMgmt
+                    .row(thisButton.parents('tr'))
+                    .remove()
+                    .draw();
+                  fireSwal('User Management', 'User deleted successfully', 'success');
+                } else {
+                  fireSwal('User Management', 'Failed to delete user. Please try again', 'error');
+                }
+
+              }).catch(function(err) {
+                console.log(err);
+                fireSwal('User Management', 'Failed to delete user. Please try again', 'error');
+              });
+            }
+          });
+
+        });
       }
     });
     var loadFile = function(event) {
@@ -366,6 +453,80 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
         URL.revokeObjectURL(output.src)
       }
     };
+
+    function loadMealList(meal_type){
+     
+      fireAjax('MealPlanController.php?action=get_meal_by_category&type=' + meal_type,'',false).then(function(data){
+        console.log(data);
+        let objData = $.parseJSON(data.trim()).data;
+        let retval = '';
+    
+        $.each(objData,function(k,v){
+          retval += '<tr>';
+          retval += '<td>' + '<img width="70" height="70" src="' + image_url + v.plan_picture + '" alt="meal">' + '</td>';
+          retval += '<td>' + v.plan_name + '</td>';
+          retval += '<td>' + v.plan_description + '</td>';
+          retval += '<td>' + v.plan_category + '</td>';
+          retval += '<td>' + v.total_calories + '</td>';
+          retval += '<td class="text-right"><button data-id = "' + v.id + '" class="btnAddToDaily btn btn-success btn-sm"><i class="fa fa-plus"></i>&nbsp;Add to daily meal</button></td>';
+          retval += '</tr>';
+        });
+        if(dtMeal != null){
+          dtMeal.destroy();
+        }
+        $('#tblMealsBody').html(retval);
+        dtMeal = $('#tblMeals').DataTable({
+          "paging": true,
+          "ordering": false,
+          "info": true,
+          "autoWidth": true,
+          "responsive": true
+        });
+      }).catch(function(err){
+        console.log(err);
+        fireSwal('Meals','Failed to retrieve list of meals. Please reload the page','error');
+      })
+    }
+    function loadUsers() {
+      fireAjax('UsersController.php?action=get_all_users', '', false).then(function(data) {
+        console.log(data);
+        let objData = $.parseJSON(data.trim()).data;
+        let retval = '';
+        $.each(objData, function(k, v) {
+          retval += '<tr>';
+          retval += '<td>' + v.gmail_address + '</td>';
+          retval += '<td>' + v.lastname + '</td>';
+          retval += '<td>' + v.firstname + '</td>';
+          retval += '<td>' + v.middlename + '</td>';
+          retval += '<td>' + v.birthdate + '</td>';
+          retval += '<td>';
+          if (v.gender == 'Male') {
+            retval += '<button class="btn btn-secondary btn-sm"><i class="fa fa-male"></i>&nbsp;Male</button>';
+          } else {
+            retval += '<button class="btn btn-warning btn-sm"><i class="fa fa-female"></i>&nbsp;Female</button>';
+          }
+          retval += '</td>';
+          retval += '<td class="text-right"><button data-id = "' + v.id + '" class="btnDeleteUser btn btn-danger btn-sm"><i class="fa fa-trash"></i>&nbsp;Delete</button></td>';
+          retval += '</tr>';
+        });
+
+        if (dtUserMgmt != null) {
+          dtUserMgmt.destroy();
+        }
+        $('#tblUserMgmtBody').html(retval);
+        dtUserMgmt = $('#tblUserMgmt').DataTable({
+          "destroy": true,
+          "paging": true,
+          "ordering": false,
+          "info": true,
+          "autoWidth": true,
+          "responsive": true
+        });
+      }).catch(function(err) {
+        console.log(err);
+        fireSwal('User Management', 'Failed to retrieve list of users. Please reload the page', 'error');
+      })
+    }
 
     function loadAllMeals() {
       fireAjax('MealPlanController.php?action=get_user_mealplan', '', false).then(function(data) {
@@ -385,9 +546,18 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
           retval += '</td>';
           retval += '</tr>';
         });
-
+        if (dtMealMgmt != null) {
+          dtMealMgmt.destroy();
+        }
         $('#tblMealMgmtBody').html(retval);
-        $('#tblMealMgmt').DataTable();
+        dtMealMgmt = $('#tblMealMgmt').DataTable({
+
+          "paging": true,
+          "ordering": false,
+          "info": true,
+          "autoWidth": true,
+          "responsive": true
+        });
       }).catch(function(err) {
         console.log(err);
         fireSwal('Meal Management', 'Failed to retrieve list of meals. Please reload the page', 'error');

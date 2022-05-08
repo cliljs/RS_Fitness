@@ -14,6 +14,10 @@ class MealPlanModel
         $this->data_helper = new DataController($this->base_table);
     }
 
+    public function get_meal_by_category($meal_type){
+        global $db, $common;
+        return $db->get_list("Select * from {$this->base_table} where plan_category = ? order by plan_name",[$meal_type]);
+    }
     public function create_mealplan($payload = [], $file = [])
     {
         global $db, $common, $ingredient_model;
