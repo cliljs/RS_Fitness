@@ -208,7 +208,7 @@
 
     </div>
     <hr>
-    <h4 class="mt-3">List of <?php echo $meal_type; ?></h4>
+    <h4 class="mt-3">All Meals</h4>
     <div class="text-right">
       <button class="btn btn-md btn-info"><i class="fa fa-plus"></i>&nbsp; Add Custom Meal</button>
     </div>

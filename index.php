@@ -303,7 +303,7 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
         loadMealList($("meta[name=mode]").attr("content"));
 
 
-        
+
       } else if (me == "mealmgmt") {
         loadAllMeals();
         let ingredients_arr = [];
@@ -454,14 +454,11 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
       }
     };
 
-    function loadMealList(meal_type){
-     
-      fireAjax('MealPlanController.php?action=get_meal_by_category&type=' + meal_type,'',false).then(function(data){
-        console.log(data);
+    function loadMealList(meal_type) {
+      fireAjax('MealPlanController.php?action=get_meal_by_category', '', false).then(function(data) {
+        console.log(data.trim());
         let objData = $.parseJSON(data.trim()).data;
-        let retval = '';
-    
-        $.each(objData,function(k,v){
+        $.each(objData, function(k, v) {
           retval += '<tr>';
           retval += '<td>' + '<img width="70" height="70" src="' + image_url + v.plan_picture + '" alt="meal">' + '</td>';
           retval += '<td>' + v.plan_name + '</td>';
@@ -471,7 +468,7 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
           retval += '<td class="text-right"><button data-id = "' + v.id + '" class="btnAddToDaily btn btn-success btn-sm"><i class="fa fa-plus"></i>&nbsp;Add to daily meal</button></td>';
           retval += '</tr>';
         });
-        if(dtMeal != null){
+        if (dtMeal != null) {
           dtMeal.destroy();
         }
         $('#tblMealsBody').html(retval);
@@ -482,11 +479,26 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
           "autoWidth": true,
           "responsive": true
         });
-      }).catch(function(err){
+      }).catch(function(err) {
         console.log(err);
-        fireSwal('Meals','Failed to retrieve list of meals. Please reload the page','error');
+        fireSwal('Meals', 'Failed to retrieve all meals. Please reload the page', 'error');
+      })
+      fireAjax('MealPlanController.php?action=get_meal_by_category&type=' + meal_type, '', false).then(function(data) {
+        console.log(data);
+        let objData = $.parseJSON(data.trim()).data;
+        let retval = '';
+        let retvalPC = '';
+
+        $.each(objData,function(k,v){
+
+        });
+
+      }).catch(function(err) {
+        console.log(err);
+        fireSwal('Meals', 'Failed to retrieve list of meals. Please reload the page', 'error');
       })
     }
+
     function loadUsers() {
       fireAjax('UsersController.php?action=get_all_users', '', false).then(function(data) {
         console.log(data);

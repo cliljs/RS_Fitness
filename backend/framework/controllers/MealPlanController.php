@@ -55,7 +55,7 @@ switch ($act) {
             [
                 "action"  => $_SERVER['REQUEST_URI'],
                 "success" => 1,
-                "data"    => $mealplan_model->get_meal_by_category($_GET['type'])
+                "data"    => $mealplan_model->get_meal_by_category($_GET)
             ]
         );
         break;
