@@ -18,9 +18,9 @@ class MealPlanModel
         global $db;
         if(isset($meal_type['type'])){
             $type = $meal_type['type'];
-            $result = $db->get_list("Select * from {$this->base_table} where plan_category = ? order by plan_name",[$type]);
+            $result = $db->get_list("Select mp.*,(Select SUM(calories) from rs_meal_ingredients where meal_id = mp.id) as total_calories from {$this->base_table} mp where plan_category = ? order by plan_name",[$type]);
         } else{
-            $result = $db->get_list("Select * from {$this->base_table} order by plan_name",[]);
+            $result = $db->get_list("Select mp.*,(Select SUM(calories) from rs_meal_ingredients where meal_id = mp.id) as total_calories from {$this->base_table} mp order by plan_category",[]);
         }
         return $result;
     }
@@ -79,7 +79,7 @@ class MealPlanModel
     public function get_user_mealplan()
     {
         global $db;
-        return $db->get_list("SELECT mp.*,(Select SUM(calories) from rs_meal_ingredients where meal_id = mp.id) as total_calories FROM {$this->base_table} mp ORDER BY plan_name,plan_category", []);
+        return $db->get_list("SELECT mp.*,(Select SUM(calories) from rs_meal_ingredients where meal_id = mp.id) as total_calories FROM {$this->base_table} mp ORDER BY plan_category", []);
     }
 }
 $mealplan_model = new MealPlanModel();

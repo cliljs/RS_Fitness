@@ -31,6 +31,7 @@ class StudentMealModel
             $arr = [
                 "user_id"            => $_SESSION['id'],
                 "meal_name"          => $payload['meal_name'],
+                "meal_date"          => $payload['meal_date'],
                 "meal_description"   => $payload['meal_description'],
                 "meal_category"      => $payload['meal_category'],
                 "calories_obtained"  => $payload['calories_obtained'],
@@ -51,10 +52,10 @@ class StudentMealModel
         return $this->data_helper->remove_row($pk);
     }
 
-    public function get_user_meals($pk= null)
+    public function get_user_meals($payload = [])
     {
         global $db, $common;
-        return $db->get_list("SELECT * FROM {$this->base_table} WHERE user_id = ?", [$_SESSION['id']]);
+        return $db->get_list("SELECT * FROM {$this->base_table} WHERE user_id = ? and meal_date = ?", [$_SESSION['id'],$payload['date_taken']]);
     }
 }
 

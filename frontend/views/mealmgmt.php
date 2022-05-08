@@ -21,8 +21,8 @@
             <th></th>
           </tr>
         </thead>
-        <tbody id = "tblMealMgmtBody">
-       
+        <tbody id="tblMealMgmtBody">
+
 
         </tbody>
       </table>
@@ -106,8 +106,8 @@
 
 
               <div class="row">
-                <div class="col-md-12 text-right" style = "padding-right:0px;">
-                  <a id="btnAddIngredients" class="btn btn-info" href = "Javascript:void(0)">Add to list</a>
+                <div class="col-md-12 text-right" style="padding-right:0px;">
+                  <a id="btnAddIngredients" class="btn btn-info" href="Javascript:void(0)">Add to list</a>
                 </div>
               </div>
               <div class="form-group row mt-2">
@@ -135,3 +135,78 @@
     </form>
   </div>
 </div>
+
+
+
+<!--test -->
+
+<div class="carousel-item active">
+  <div class="row">
+    <div class="col-md-3">
+      <div class="product-block"><img class="d-block w-100 mb-2" src="https://via.placeholder.com/800x400" alt="Product">
+        <div class="product-info">
+          <h4>Meal Name</h4>
+          <p><button class="btn btn-outline-secondary btn-sm">200 Calories</button></p>
+          <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut at ex sed neque luctus pulvinar in quis augue. Integer eget neque sollicitudin, accumsan augue id, volutpat lectus.</p>
+          <div class="row">
+            <div class="col-md-12 text-right"> <button data-id="27" class="btnAddMeal btn btn-sm btn-success"><i class="fa fa-plus"></i>&nbsp;Add to daily meal</button> <button data-id="27" class="btnViewMeal btn btn-sm btn-secondary"><i class="fa fa-view"></i>&nbsp;More Details</button> </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="product-block"><img class="d-block w-100 mb-2" src="https://via.placeholder.com/800x400" alt="Product">
+            <div class="product-info">
+              <h4>Meal Name</h4>
+              <p><button class="btn btn-outline-secondary btn-sm">200 Calories</button></p>
+              <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut at ex sed neque luctus pulvinar in quis augue. Integer eget neque sollicitudin, accumsan augue id, volutpat lectus.</p>
+              <div class="row">
+                <div class="col-md-12 text-right"> <button data-id="29" class="btnAddMeal btn btn-sm btn-success"><i class="fa fa-plus"></i>&nbsp;Add to daily meal</button> <button data-id="29" class="btnViewMeal btn btn-sm btn-secondary"><i class="fa fa-view"></i>&nbsp;More Details</button> </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="row">
+            <div class="col-md-3">
+              <div class="product-block"><img class="d-block w-100 mb-2" src="https://via.placeholder.com/800x400" alt="Product">
+                <div class="product-info">
+                  <h4>Meal Name</h4>
+                  <p><button class="btn btn-outline-secondary btn-sm">200 Calories</button></p>
+                  <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut at ex sed neque luctus pulvinar in quis augue. Integer eget neque sollicitudin, accumsan augue id, volutpat lectus.</p>
+                  <div class="row">
+                    <div class="col-md-12 text-right"> <button data-id="30" class="btnAddMeal btn btn-sm btn-success"><i class="fa fa-plus"></i>&nbsp;Add to daily meal</button> <button data-id="30" class="btnViewMeal btn btn-sm btn-secondary"><i class="fa fa-view"></i>&nbsp;More Details</button> </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="carousel-item">
+              <div class="row">
+                <div class="col-md-3">
+                  <div class="product-block"><img class="d-block w-100 mb-2" src="https://via.placeholder.com/800x400" alt="Product">
+                    <div class="product-info">
+                      <h4>Meal Name</h4>
+                      <p><button class="btn btn-outline-secondary btn-sm">200 Calories</button></p>
+                      <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut at ex sed neque luctus pulvinar in quis augue. Integer eget neque sollicitudin, accumsan augue id, volutpat lectus.</p>
+                      <div class="row">
+                        <div class="col-md-12 text-right"> <button data-id="28" class="btnAddMeal btn btn-sm btn-success"><i class="fa fa-plus"></i>&nbsp;Add to daily meal</button> <button data-id="28" class="btnViewMeal btn btn-sm btn-secondary"><i class="fa fa-view"></i>&nbsp;More Details</button> </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="carousel-item">
+                  <div class="row">
+                    <div class="col-md-3">
+                      <div class="product-block"><img class="d-block w-100 mb-2" src="https://via.placeholder.com/800x400" alt="Product">
+                        <div class="product-info">
+                          <h4>Meal Name</h4>
+                          <p><button class="btn btn-outline-secondary btn-sm">200 Calories</button></p>
+                          <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut at ex sed neque luctus pulvinar in quis augue. Integer eget neque sollicitudin, accumsan augue id, volutpat lectus.</p>
+                          <div class="row">
+                            <div class="col-md-12 text-right"> <button data-id="26" class="btnAddMeal btn btn-sm btn-success"><i class="fa fa-plus"></i>&nbsp;Add to daily meal</button> <button data-id="26" class="btnViewMeal btn btn-sm btn-secondary"><i class="fa fa-view"></i>&nbsp;More Details</button> </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>

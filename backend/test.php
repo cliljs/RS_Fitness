@@ -14,9 +14,10 @@ $seeds = [
         "height"        => 180.34,
         "weight"        => 198.41,
         "bmi"           => 45.21,
+        "is_admin"      => 1
     ],
     [
-        "gmail_address" => "bry@gmail.com",
+        "gmail_address" => "barata.bryannikko.dev@gmail.com",
         "firstname"     => "Bryan Nikko",
         "middlename"    => "Vitug",
         "lastname"      => "Barata",
@@ -25,17 +26,19 @@ $seeds = [
         "height"        => 182.88,
         "weight"        => 176.37,
         "bmi"           => 40.2,
+        "is_admin"      => 1
     ],
     [
         "gmail_address" => "patrick@gmail.com",
         "firstname"     => "Ben Patrick",
         "middlename"    => "Vitug",
         "lastname"      => "Chua",
-        "birthdate"      => "2004-02-16",
+        "birthdate"      => "2004-01-31",
         "gender"        => "Male",
         "height"        => 165.1,
         "weight"        => 154.324,
         "bmi"           => 30.8,
+        "is_admin"      => 1
     ],
 ];
 

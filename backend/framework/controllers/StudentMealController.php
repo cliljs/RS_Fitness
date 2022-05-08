@@ -39,7 +39,7 @@ switch ($act) {
            [
             "action"  => $_SERVER['REQUEST_URI'],
             "success" => 1,
-            "data"    => $student_meal_model->get_user_meals()
+            "data"    => $student_meal_model->get_user_meals($_POST)
            ]
         );
         break;
