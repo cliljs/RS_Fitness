@@ -60,7 +60,7 @@
               </div>
               <div class="form-group row">
                 <label>Description</label>
-                <input class="form-control" type="text" id="plan_description" name="plan_description" required>
+                <textarea rows = "5" class="form-control" id="plan_description" name="plan_description" required></textarea>
               </div>
 
               <div class="form-group row">
@@ -151,7 +151,7 @@
                 <img class="img-fluid" id="imgPicture" name="imgPicture" src="https://via.placeholder.com/500">
                 <div class="input-group">
                   <div class="custom-file">
-                    <input type="file" accept=".jpg, .png, .jpeg, .bmp" class="custom-file-input" id="meal_picture" name="meal_picture" onchange="loadFile(event)">
+                    <input type="file" accept=".jpg, .png, .jpeg, .bmp" class="custom-file-input" id="edit_meal_picture" name="edit_meal_picture" onchange="loadFile(event)">
                     <label class="custom-file-label" for="meal_picture">Choose Image</label>
                   </div>
 
@@ -162,16 +162,16 @@
             <div class="col-md-12 col-lg-6">
               <div class="form-group row">
                 <label>Meal Name</label>
-                <input class="form-control" type="text" id="plan_name" name="plan_name" required>
+                <input class="form-control" type="text" id="edit_plan_name" name="edit_plan_name" required>
               </div>
               <div class="form-group row">
                 <label>Description</label>
-                <input class="form-control" type="text" id="plan_description" name="plan_description" required>
+                <textarea rows="5" class="form-control" id="edit_plan_description" name="edit_plan_description" required></textarea>
               </div>
 
               <div class="form-group row">
                 <label>Category</label>
-                <select id="plan_category" name="plan_category" class="form-control" style="width: 100%;">
+                <select id="edit_plan_category" name="edit_plan_category" class="form-control" style="width: 100%;">
                   <option selected disabled>Please select a meal category</option>
                   <option value="Breakfast">Breakfast</option>
                   <option value="Brunch">Brunch</option>
@@ -196,7 +196,7 @@
                 <div class="col-sm-12 col-md-7">
                   <div class="form-group row">
                     <label>Ingredient Name</label>
-                    <input class="form-control" type="text" id="ingredient_name" name="ingredient_name">
+                    <input class="form-control" type="text" id="edit_ingredient_name" name="edit_ingredient_name">
                   </div>
                 </div>
                 <div class="col-sm-12 col-md-1 p-1">
@@ -205,7 +205,7 @@
                 <div class="col-sm-12 col-md-4">
                   <div class="form-group row">
                     <label>Calories</label>
-                    <input class="form-control" type="number" id="calorie" name="calorie">
+                    <input class="form-control" type="number" id="edit_calorie" name="edit_calorie">
                   </div>
                 </div>
               </div>
@@ -213,7 +213,7 @@
 
               <div class="row">
                 <div class="col-md-12 text-right" style="padding-right:0px;">
-                  <a id="btnAddIngredients" class="btn btn-info" href="Javascript:void(0)">Add to list</a>
+                  <a id="edit_btnAddIngredients" class="btn btn-info" href="Javascript:void(0)">Add to list</a>
                 </div>
               </div>
               <div class="form-group row mt-2">
@@ -225,7 +225,7 @@
                       <th></th>
                     </tr>
                   </thead>
-                  <tbody id="tblIngredientsBody">
+                  <tbody id="edit_tblIngredientsBody">
 
                   </tbody>
                 </table>
@@ -235,7 +235,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Register</button>
+          <button id = "edit_btnAddIngredient" type="submit" class="btn btn-primary">Update</button>
         </div>
       </div>
     </form>

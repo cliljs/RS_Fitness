@@ -17,3 +17,6 @@ $request_controller = basename(parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH))
 if (file_exists(CONTROLLER_PATH . $request_controller)) {
     include_once  CONTROLLER_PATH .  $request_controller; 
 } 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
