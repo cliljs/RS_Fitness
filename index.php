@@ -110,6 +110,46 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
 
       vertical-align: middle !important;
     }
+
+
+    .counter-box {
+      display: block;
+      background: #f6f6f6;
+      padding: 40px 20px 37px;
+      text-align: center
+    }
+
+    .counter-box p {
+      margin: 5px 0 0;
+      padding: 0;
+      color: #909090;
+      font-size: 18px;
+      font-weight: 500
+    }
+
+    .counter-box i {
+      font-size: 60px;
+      margin: 0 0 15px;
+      color: #d2d2d2
+    }
+
+    .counter {
+      display: block;
+      font-size: 32px;
+      font-weight: 700;
+      color: #666;
+      line-height: 28px
+    }
+
+    .counter-box.colored {
+      background: #3acf87;
+    }
+
+    .counter-box.colored p,
+    .counter-box.colored i,
+    .counter-box.colored .counter {
+      color: #fff
+    }
   </style>
 </head>
 
@@ -285,7 +325,7 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
   <script src="frontend/plugins/datatable/datatable.js"></script>
 
   <!-- <script src="frontend/plugins/datatables.net-scroller/js/dataTables.scroller.min.js"></script> -->
-
+  <script src="frontend/plugins/echarts/dist/echarts.min.js"></script>
   <!-- Custom Theme Scripts -->
   <script src="frontend/build/js/custom.min.js"></script>
   <script src="frontend/plugins/sweetalert2/sweetalert2.min.js"></script>
@@ -417,17 +457,46 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
             fireSwal('Custom Meal', 'Failed to add custom meal. Please try again', 'error');
           })
         });
+      } else if (me == null || me == "home") {
+        //alert(moment().format('YYYY-MM-DD'));
+        $("#reportrange span").html(moment().startOf("month").format("MMMM D, YYYY") + " - " + moment().endOf("month").format("MMMM D, YYYY"))
+        $('.counter-value').each(function() {
+          $(this).prop('Counter', 0).animate({
+            Counter: $(this).text()
+          }, {
+            duration: 1000,
+            easing: 'swing',
+            step: function(now) {
+              $(this).text(Math.ceil(now));
+            }
+          });
+        });
+        //todo - add counter ajax
+        init_echarts(moment().startOf("month").format('YYYY-MM-DD'),moment().endOf("month").format('YYYY-MM-DD'));
       } else if (me == "mealmgmt") {
         loadAllMeals();
         let ingredients_arr = [];
+        let edit_ingredients_arr = [];
         $("#meal_picture").on("change", function() {
           $(".custom-file-label").html("Image Selected");
+        });
+        $('#edit_btnAddIngredients').on('click', function() {
+          let ingName = $('#edit_ingredient_name').val();
+          let ingCal = $('#edit_calorie').val();
+
+          $('#edit_tblIngredientsBody').append('<tr><td>' + ingName + '</td><td>' + ingCal + '</td><td class = "text-right"><button class = "btnEditRemoveIngredient btn btn-danger btn-sm"><i class = "fa fa-trash"></i>&nbsp;Remove</button></td></tr>');
+          $('#edit_ingredient_name').val('');
+          $('#edit_calorie').val('');
+          edit_ingredients_arr.push({
+            name: ingName,
+            calories: ingCal
+          });
         });
         $('#btnAddIngredients').on('click', function() {
           let ingName = $('#ingredient_name').val();
           let ingCal = $('#calorie').val();
 
-          $('#tblIngredientsBody').append('<tr><td>' + ingName + '</td><td>' + ingCal + '</td><td><button class = "btnRemoveIngredient btn btn-danger btn-sm">Remove</button></td></tr>');
+          $('#tblIngredientsBody').append('<tr><td>' + ingName + '</td><td>' + ingCal + '</td><td class = "text-right"><button class = "btnRemoveIngredient btn btn-danger btn-sm"><i class = "fa fa-trash"></i>&nbsp;Remove</button></td></tr>');
           $('#ingredient_name').val('');
           $('#calorie').val('');
           ingredients_arr.push({
@@ -477,56 +546,69 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
             }
           })
         });
-        $('body').on('click','.btnMealMgmtEdit',function(){
+        $('body').on('click', '.btnMealMgmtEdit', function() {
           let dataID = $(this).attr('data-id');
-          fireAjax('MealPlanController.php?action=get_meal_info&id=' + dataID,'',false).then(function(data){
+          fireAjax('MealPlanController.php?action=get_meal_info&id=' + dataID, '', false).then(function(data) {
             console.log(data);
             let objData = $.parseJSON(data.trim()).data;
-            $('#editMealModalLabel').attr('data-id',dataID);
+            $('#editMealModalLabel').attr('data-id', dataID);
             $('#edit_plan_name').val(objData.plan_name);
             $('#edit_plan_description').val(objData.plan_description);
             $('#edit_plan_category').val(objData.plan_category);
-            fireAjax('MealIngredientsController.php?action=get_meal_ingredients&meal_pk=' + dataID,'',false).then(function(data2){
+            fireAjax('MealIngredientsController.php?action=get_meal_ingredients&meal_pk=' + dataID, '', false).then(function(data2) {
               console.log(data2);
               let objData2 = $.parseJSON(data2.trim()).data;
               let retval = '';
-              $.each(objData2,function(k,v){
+              $.each(objData2, function(k, v) {
+                edit_ingredients_arr.push({
+                  name: v.ingredient_name,
+                  calories: v.calories
+                });
                 retval += '<tr>';
                 retval += '<td>' + v.ingredient_name + '</td>';
                 retval += '<td>' + v.calories + '</td>';
                 retval += '<td class = "text-right"><button type = "button" class = "btnEditRemoveIngredient btn btn-danger btn-sm" data-id = "' + v.id + '"><i class = "fa fa-trash"></i>&nbsp;Remove</button></td>';
-                retval += '</tr>'; 
+                retval += '</tr>';
               });
 
               $('#edit_tblIngredientsBody').html(retval);
-              $('#editMealModal').modal({backdrop:"static"});
-            }).catch(function(err2){
+              $('#editMealModal').modal({
+                backdrop: "static"
+              });
+            }).catch(function(err2) {
               console.log(err2);
-              fireSwal('Edit Meal','Failed to retrieve meal information. Please try again','error');
+              fireSwal('Edit Meal', 'Failed to retrieve meal information. Please try again', 'error');
 
             })
-            
-          }).catch(function(err){
+
+          }).catch(function(err) {
             console.log(err);
-            fireSwal('Edit Meal','Failed to retrieve meal information. Please try again','error');
+            fireSwal('Edit Meal', 'Failed to retrieve meal information. Please try again', 'error');
           })
         });
-        $('body').on('click','.btnEditRemoveIngredient',function(){
-          let dataID = $(this).attr('data-id');
-          let thisButton = $(this);
-          fireAjax('MealIngredientsController.php?action=remove_ingredient&id=' + dataID,'',false).then(function(data){
-            console.log(data.trim());
-            let objData = $.parseJSON(data.trim()).data;
-            if(objData.length === 0){
-              fireSwal('Meal Ingredients','Failed to remove meal ingredient. Please try again','error');
-            } else{
-              thisButton.closest('tr').remove();
-              fireSwal('Meal Ingredients','Meal Ingredient removed successfully','success');
-            }
-          }).catch(function(err){
-            console.log(err);
-            fireSwal('Meal Ingredients','Failed to remove meal ingredient. Please try again','error');
-          })
+        $('body').on('click', '.btnEditRemoveIngredient', function() {
+          let row = $(this).closest('tr');
+          let tditem = $(this)
+            .closest('tr')
+            .children('td')
+            .html();
+          edit_ingredients_arr.splice(edit_ingredients_arr.findIndex(el => el.vip == tditem), 1);
+          row.remove();
+          // let dataID = $(this).attr('data-id');
+          // let thisButton = $(this);
+          // fireAjax('MealIngredientsController.php?action=remove_ingredient&id=' + dataID, '', false).then(function(data) {
+          //   console.log(data.trim());
+          //   let objData = $.parseJSON(data.trim()).data;
+          //   if (objData.length === 0) {
+          //     fireSwal('Meal Ingredients', 'Failed to remove meal ingredient. Please try again', 'error');
+          //   } else {
+          //     thisButton.closest('tr').remove();
+          //     fireSwal('Meal Ingredients', 'Meal Ingredient removed successfully', 'success');
+          //   }
+          // }).catch(function(err) {
+          //   console.log(err);
+          //   fireSwal('Meal Ingredients', 'Failed to remove meal ingredient. Please try again', 'error');
+          // })
         });
         $('#mdlMealRegister').on('submit', function(e) {
           e.preventDefault();
@@ -550,24 +632,28 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
           })
 
         });
-        $('#mdlEditMeal').on('submit',function(e){
+        $('#mdlEditMeal').on('submit', function(e) {
           e.preventDefault();
-          let payload = {
+          console.log(edit_ingredients_arr);
 
-          };
-          fireAjax('','',false).then(function(data){
+          let dataID = $('#editMealModalLabel').attr('data-id');
+          let json_arr = JSON.stringify(edit_ingredients_arr);
+          let fd = new FormData(this);
+          fd.append('ingredients', json_arr);
+
+          fireAjax('MealPlanController.php?action=update_mealplan&id=' + dataID, fd, true).then(function(data) {
             console.log(data);
             let objData = $.parseJSON(data.trim()).data;
-            if(objData){
+            if (objData) {
               $('#mdlEditMeal').trigger('reset');
-              
-              fireSwal('Edit Meal','Meal updated successfully','success');
-            } else{
-              fireSwal('Edit Meal','Failed to edit meal. Please try again','error');
+              $('#editMealModal').modal('hide');
+              fireSwal('Edit Meal', 'Meal updated successfully', 'success');
+            } else {
+              fireSwal('Edit Meal', 'Failed to edit meal. Please try again', 'error');
             }
-          }).catch(function(err){
+          }).catch(function(err) {
             console.log(err);
-            fireSwal('Edit Meal','Failed to edit meal. Please try again','error');
+            fireSwal('Edit Meal', 'Failed to edit meal. Please try again', 'error');
           })
         });
       } else if (me == "usermgmt") {
@@ -720,23 +806,23 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
           })
         })
       } else if (me == "history") {
-        let objData = [{
-            title: "Calories gained: 2500",
-            start: "2022-05-08",
-            disableResizing: true
-          },
-          {
-            title: "Calories burned: 1200",
-            start: "2022-05-08",
-            disableResizing: true
-          },
-          {
-            title: "wews",
-            start: "2022-05-15"
-          }
-        ];
-        init_calendar(objData);
-        //plotCalendar(5,2022);
+        // let objData = [{
+        //     title: "Calories gained: 2500",
+        //     start: "2022-05-08",
+        //     disableResizing: true
+        //   },
+        //   {
+        //     title: "Calories burned: 1200",
+        //     start: "2022-05-08",
+        //     disableResizing: true
+        //   },
+        //   {
+        //     title: "wews",
+        //     start: "2022-05-15"
+        //   }
+        // ];
+        // init_calendar(objData);
+        plotCalendar(5, 2022);
       }
     });
 
@@ -749,10 +835,18 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
     };
 
     function plotCalendar(m, y) {
-      fireAjax('', '', false).then(function(data) {
+      fireAjax('UsersController.php?action=get_user_history&month=' + m + '&year=' + y, '', false).then(function(data) {
         console.log(data);
+
+
         let objData = $.parseJSON(data.trim()).data;
-        init_calendar(objData);
+
+        let meal_taken = objData.meal_taken;
+        let workout_made = objData.calories_burned;
+        let merged_array = meal_taken.concat(workout_made);
+        merged_array.pop();
+        console.log(merged_array);
+        init_calendar(merged_array);
       }).catch(function(err) {
         console.log(err);
         fireSwal('History', 'Failed to retrieve history. Please reload the page', 'error');
@@ -860,65 +954,66 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
         console.log(err);
         fireSwal('Meals', 'Failed to retrieve all meals. Please reload the page', 'error');
       })
-      if (me == "meal") {
-        fireAjax('MealPlanController.php?action=get_meal_by_category&type=' + meal_type, '', false).then(function(data) {
-          console.log(data);
-          let objData = $.parseJSON(data.trim()).data;
-          let retvalMobile = '';
-          let retvalPC = '';
-          let tempCount = 1;
-          let desc = '';
-          $.each(objData, function(k, v) {
-            desc = v.plan_description;
-            if (desc.length > 90) {
-              desc = desc.substr(0, 86) + '...';
-            }
-            if (tempCount == 1 && retvalPC == '') {
-              retvalPC += '<div class="carousel-item active">';
-              retvalPC += '<div class = "row">';
-            } else if (tempCount == 1 && retvalPC != '') {
-              retvalPC += '<div class="carousel-item">';
-              retvalPC += '<div class = "row">';
-            }
-            retvalPC += '<div class="col-md-4">';
-            retvalPC += '<div class="product-block">';
-            retvalPC += '<img class="d-block w-100 mb-2" src="https://via.placeholder.com/800x400" alt="Product">';
-            retvalPC += '<div class="product-info">';
-            retvalPC += '  <h4>' + v.plan_name + '</h4>';
-            retvalPC += '  <p><button class="btn btn-outline-secondary btn-sm">' + v.total_calories + ' Calories</button></p>';
-            retvalPC += '  <p class="text-muted">' + desc + '</p>';
-            retvalPC += '  <div class="row">';
-            retvalPC += '    <div class="col-md-12 text-right">';
-            retvalPC += '      <button data-id = "' + v.id + '" class="btnAddMeal btn btn-sm btn-success"><i class = "fa fa-plus"></i>&nbsp;Add to daily meal</button>';
-            retvalPC += '      <button data-id = "' + v.id + '" class="btnViewMeal btn btn-sm btn-secondary"><i class = "fa fa-view"></i>&nbsp;More Details</button>';
-            retvalPC += '    </div>';
-            retvalPC += '  </div>';
-            retvalPC += '</div>';
-            retvalPC += '</div>';
-            retvalPC += '</div>';
-            tempCount++;
-            if (tempCount == 4) {
-              retvalPC += '</div>';
-              retvalPC += '</div>';
-              tempCount = 1;
-            }
 
-          });
 
-          if (tempCount < 4) {
-
-            for (let i = tempCount; i < 4; i++) {
-              console.log("PROC");
-              retvalPC += '<div class="col-md-4"><div class="product-block" style = "border: 0px !important;"><div class="product-info"></div></div></div>';
-            }
+      fireAjax('MealPlanController.php?action=get_meal_by_category&type=' + meal_type, '', false).then(function(data) {
+        console.log(data);
+        let objData = $.parseJSON(data.trim()).data;
+        let retvalMobile = '';
+        let retvalPC = '';
+        let tempCount = 1;
+        let desc = '';
+        $.each(objData, function(k, v) {
+          desc = v.plan_description;
+          if (desc.length > 90) {
+            desc = desc.substr(0, 86) + '...';
           }
-          console.log(tempCount);
-          $('#carouselPCInner').html(retvalPC);
-        }).catch(function(err) {
-          console.log(err);
-          fireSwal('Meals', 'Failed to retrieve list of meals. Please reload the page', 'error');
-        })
-      }
+          if (tempCount == 1 && retvalPC == '') {
+            retvalPC += '<div class="carousel-item active">';
+            retvalPC += '<div class = "row">';
+          } else if (tempCount == 1 && retvalPC != '') {
+            retvalPC += '<div class="carousel-item">';
+            retvalPC += '<div class = "row">';
+          }
+          retvalPC += '<div class="col-md-4">';
+          retvalPC += '<div class="product-block">';
+          retvalPC += '<img class="d-block w-100 mb-2" src="https://via.placeholder.com/800x400" alt="Product">';
+          retvalPC += '<div class="product-info">';
+          retvalPC += '  <h4>' + v.plan_name + '</h4>';
+          retvalPC += '  <p><button class="btn btn-outline-secondary btn-sm">' + v.total_calories + ' Calories</button></p>';
+          retvalPC += '  <p class="text-muted">' + desc + '</p>';
+          retvalPC += '  <div class="row">';
+          retvalPC += '    <div class="col-md-12 text-right">';
+          retvalPC += '      <button data-id = "' + v.id + '" class="btnAddMeal btn btn-sm btn-success"><i class = "fa fa-plus"></i>&nbsp;Add to daily meal</button>';
+          retvalPC += '      <button data-id = "' + v.id + '" class="btnViewMeal btn btn-sm btn-secondary"><i class = "fa fa-view"></i>&nbsp;More Details</button>';
+          retvalPC += '    </div>';
+          retvalPC += '  </div>';
+          retvalPC += '</div>';
+          retvalPC += '</div>';
+          retvalPC += '</div>';
+          tempCount++;
+          if (tempCount == 4) {
+            retvalPC += '</div>';
+            retvalPC += '</div>';
+            tempCount = 1;
+          }
+
+        });
+
+        if (tempCount < 4) {
+
+          for (let i = tempCount; i < 4; i++) {
+            console.log("PROC");
+            retvalPC += '<div class="col-md-4"><div class="product-block" style = "border: 0px !important;"><div class="product-info"></div></div></div>';
+          }
+        }
+        console.log(tempCount);
+        $('#carouselPCInner').html(retvalPC);
+      }).catch(function(err) {
+        console.log(err);
+        fireSwal('Meals', 'Failed to retrieve list of meals. Please reload the page', 'error');
+      })
+
 
     }
 

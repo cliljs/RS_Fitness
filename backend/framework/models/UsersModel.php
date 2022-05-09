@@ -15,24 +15,33 @@ class UsersModel
 
     public function get_admin_criteria($payload = []) {
         global $db, $common;
+        $kwiri = '';
+        unset($payload['action']);
+        if($payload['gender'] == 'All'){
+            unset($payload['gender']);
+        } else{
+            $kwiri = 'AND ru.gender = ?';
+        }
 
         $student_meal = $db->get_list("SELECT rss.meal_date,  CAST(SUM(rss.calories_obtained) AS int) AS title
                                       FROM rs_users AS ru
                                       INNER JOIN rs_student_meal AS rss ON ru.id = rss.user_id
-                                      WHERE MONTH(rss.meal_date) = ? AND YEAR(rss.meal_date) = ? AND ru.gender = ?
+                                      WHERE (rss.meal_date between ? and ?) {$kwiri}
+                                      
                                       GROUP BY rss.meal_date",
-                                      [$payload['month'], $payload['year'], $payload['gender']]);
+                                      array_values($payload));
 
         $student_workout = $db->get_list("SELECT  rw.workout_date, CAST(SUM(rw.calories_burned) AS int) AS title
                                       FROM rs_users AS ru
                                       INNER JOIN rs_workout AS rw ON ru.id = rw.user_id
-                                      WHERE MONTH(rw.workout_date) = ? AND YEAR(rw.workout_date) = ? AND ru.gender = ?
+                                      WHERE (rw.workout_date between ? and ?) {$kwiri}
+                                   
                                       GROUP BY rw.workout_date",
-                                      [$payload['month'], $payload['year'], $payload['gender']]);                            
+                                      array_values($payload));                            
 
         return [
             "workout"      =>  $student_workout, 
-            "studnet_meal" =>  $student_meal 
+            "student_meal" =>  $student_meal 
         ];
     }
 

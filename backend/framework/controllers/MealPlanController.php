@@ -21,7 +21,7 @@ switch ($act) {
         break;
 
     case "update_mealplan":
-        $files = !empty($_FILES) ? $_FILES[0] : [];
+        $files = !empty($_FILES) ? $_FILES['edit_meal_picture'] : [];
         echo json_encode(
             [
                 "action"  => $_SERVER['REQUEST_URI'],
