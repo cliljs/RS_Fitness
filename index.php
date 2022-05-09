@@ -483,13 +483,51 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
             console.log(data);
             let objData = $.parseJSON(data.trim()).data;
             $('#editMealModalLabel').attr('data-id',dataID);
+            $('#edit_plan_name').val(objData.plan_name);
+            $('#edit_plan_description').val(objData.plan_description);
+            $('#edit_plan_category').val(objData.plan_category);
+            fireAjax('MealIngredientsController.php?action=get_meal_ingredients&meal_pk=' + dataID,'',false).then(function(data2){
+              console.log(data2);
+              let objData2 = $.parseJSON(data2.trim()).data;
+              let retval = '';
+              $.each(objData2,function(k,v){
+                retval += '<tr>';
+                retval += '<td>' + v.ingredient_name + '</td>';
+                retval += '<td>' + v.calories + '</td>';
+                retval += '<td class = "text-right"><button type = "button" class = "btnEditRemoveIngredient btn btn-danger btn-sm" data-id = "' + v.id + '"><i class = "fa fa-trash"></i>&nbsp;Remove</button></td>';
+                retval += '</tr>'; 
+              });
 
-            $('#editMealModal').modal({backdrop:"static"});
+              $('#edit_tblIngredientsBody').html(retval);
+              $('#editMealModal').modal({backdrop:"static"});
+            }).catch(function(err2){
+              console.log(err2);
+              fireSwal('Edit Meal','Failed to retrieve meal information. Please try again','error');
+
+            })
+            
           }).catch(function(err){
             console.log(err);
             fireSwal('Edit Meal','Failed to retrieve meal information. Please try again','error');
           })
-        })
+        });
+        $('body').on('click','.btnEditRemoveIngredient',function(){
+          let dataID = $(this).attr('data-id');
+          let thisButton = $(this);
+          fireAjax('MealIngredientsController.php?action=remove_ingredient&id=' + dataID,'',false).then(function(data){
+            console.log(data.trim());
+            let objData = $.parseJSON(data.trim()).data;
+            if(objData.length === 0){
+              fireSwal('Meal Ingredients','Failed to remove meal ingredient. Please try again','error');
+            } else{
+              thisButton.closest('tr').remove();
+              fireSwal('Meal Ingredients','Meal Ingredient removed successfully','success');
+            }
+          }).catch(function(err){
+            console.log(err);
+            fireSwal('Meal Ingredients','Failed to remove meal ingredient. Please try again','error');
+          })
+        });
         $('#mdlMealRegister').on('submit', function(e) {
           e.preventDefault();
 
@@ -511,6 +549,26 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
 
           })
 
+        });
+        $('#mdlEditMeal').on('submit',function(e){
+          e.preventDefault();
+          let payload = {
+
+          };
+          fireAjax('','',false).then(function(data){
+            console.log(data);
+            let objData = $.parseJSON(data.trim()).data;
+            if(objData){
+              $('#mdlEditMeal').trigger('reset');
+              
+              fireSwal('Edit Meal','Meal updated successfully','success');
+            } else{
+              fireSwal('Edit Meal','Failed to edit meal. Please try again','error');
+            }
+          }).catch(function(err){
+            console.log(err);
+            fireSwal('Edit Meal','Failed to edit meal. Please try again','error');
+          })
         });
       } else if (me == "usermgmt") {
         loadUsers();
@@ -912,7 +970,7 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
         let retval = '';
         $.each(objData, function(k, v) {
           retval += '<tr>';
-          retval += '<td><img width="100" height="100" src="' + image_url + v.plan_picture + '" alt="meal"></td>'
+          retval += (!v.plan_picture) ? '<td></td>' : '<td><img width="100" height="100" src="' + image_url + v.plan_picture + '" alt="meal"></td>'
           retval += '<td>' + v.plan_name + '</td>';
           retval += '<td>' + v.plan_description + '</td>';
           retval += '<td>' + v.plan_category + '</td>';

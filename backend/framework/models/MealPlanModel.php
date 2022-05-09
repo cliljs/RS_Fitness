@@ -37,7 +37,7 @@ class MealPlanModel
             "plan_picture"     => !empty($file) && $file['error']!= 4 ? $common->upload($file) : null,
             "created_by"       => $_SESSION['id'],
         ];
-
+     
         $fields = $common->get_insert_fields($arr);
         $last_id = $db->insert("{$this->base_table} {$fields}", array_values($arr));
         
