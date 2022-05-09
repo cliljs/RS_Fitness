@@ -11,7 +11,6 @@ switch ($act) {
             "data"    => $user_model->create_users($_POST)
         ]);
         break;
-
     case "add_other_user":
         echo json_encode([
             "action"  => $_SERVER['REQUEST_URI'],
@@ -19,7 +18,6 @@ switch ($act) {
             "data"    => $user_model->add_other_user($_POST)
         ]);
         break;
-
     case "update_user":
         // CHANGE KO PA VALIDATION NETO
         echo json_encode([
@@ -53,22 +51,13 @@ switch ($act) {
             "data"    => $user_model->data_helper->get_row_details($_GET['id'])
         ]);
         break;
-
-    case "get_all_users":
-        echo json_encode([
-            "action"  => $_SERVER['REQUEST_URI'],
-            "success" => 1,
-            "data"    => $user_model->get_all_users()
-        ]);
-        break;
-
-    case "get_user_history":
-        echo json_encode([
-            "action"  => $_SERVER['REQUEST_URI'],
-            "success" => 1,
-            "data"    => $user_model->get_users_history($_GET)
-        ]);
-        break;
+        case "get_all_users":
+            echo json_encode([
+                "action"  => $_SERVER['REQUEST_URI'],
+                "success" => 1,
+                "data"    => $user_model->get_all_users()
+            ]);
+            break;
     default:
         break;
 }

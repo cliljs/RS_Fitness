@@ -13,26 +13,6 @@ class UsersModel
         $this->data_helper = new DataController($this->base_table);
     }
 
-    public function get_users_history($payload = [])
-    {
-        global $db, $common;
-
-        $meal_taken = $db->get_list("SELECT SUM(calories_obtained) AS calories_ob, meal_date 
-                                    FROM rs_student_meal 
-                                    WHERE YEAR(meal_date) = ? AND MONTH(meal_date) = ? AND user_id = ?
-                                    GROUP BY meal_date", [$payload['year'], $payload['month'], $_SESSION['id']]);
-
-        $calories_burned = $db->get_list("SELECT SUM(calories_burned) AS burned, workout_date 
-                                          FROM rs_workout
-                                          WHERE user_id = ? AND MONTH(workout_date) = ? AND YEAR(workout_date) = ? 
-                                          GROUP BY workout_date", [$_SESSION['id'], $payload['month'], $payload['year']]);
-
-        return [
-            "meal_taken"      => $meal_taken,
-            "calories_burned" => $calories_burned,
-        ];
-    }
-
     public function get_user_gmail($email = null)
     {
         global $db;
