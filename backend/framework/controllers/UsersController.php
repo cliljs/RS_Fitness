@@ -69,6 +69,14 @@ switch ($act) {
             "data"    => $user_model->get_users_history($_GET)
         ]);
         break;
+
+    case "get_admin_criteria":
+        echo json_encode([
+            "action"  => $_SERVER['REQUEST_URI'],
+            "success" => 1,
+            "data"    => $user_model->get_admin_criteria($_GET)
+        ]);
+        break;
     default:
         break;
 }

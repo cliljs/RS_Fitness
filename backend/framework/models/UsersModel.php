@@ -13,6 +13,29 @@ class UsersModel
         $this->data_helper = new DataController($this->base_table);
     }
 
+    public function get_admin_criteria($payload = []) {
+        global $db, $common;
+
+        $student_meal = $db->get_list("SELECT rss.meal_date,  CAST(SUM(rss.calories_obtained) AS int) AS title
+                                      FROM rs_users AS ru
+                                      INNER JOIN rs_student_meal AS rss ON ru.id = rss.user_id
+                                      WHERE MONTH(rss.meal_date) = ? AND YEAR(rss.meal_date) = ? AND ru.gender = ?
+                                      GROUP BY rss.meal_date",
+                                      [$payload['month'], $payload['year'], $payload['gender']]);
+
+        $student_workout = $db->get_list("SELECT  rw.workout_date, CAST(SUM(rw.calories_burned) AS int) AS title
+                                      FROM rs_users AS ru
+                                      INNER JOIN rs_workout AS rw ON ru.id = rw.user_id
+                                      WHERE MONTH(rw.workout_date) = ? AND YEAR(rw.workout_date) = ? AND ru.gender = ?
+                                      GROUP BY rw.workout_date",
+                                      [$payload['month'], $payload['year'], $payload['gender']]);                            
+
+        return [
+            "workout"      =>  $student_workout, 
+            "studnet_meal" =>  $student_meal 
+        ];
+    }
+
     public function get_users_history($payload = [])
     {
         global $db, $common;
