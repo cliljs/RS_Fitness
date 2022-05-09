@@ -81,5 +81,9 @@ class MealPlanModel
         global $db;
         return $db->get_list("SELECT mp.*,(Select SUM(calories) from rs_meal_ingredients where meal_id = mp.id) as total_calories FROM {$this->base_table} mp ORDER BY plan_category", []);
     }
+    public function get_meal_info($pk){
+        global $db;
+        return $db->get_row("Select * from {$this->base_table} where id = ?",[$pk]);
+    }
 }
 $mealplan_model = new MealPlanModel();

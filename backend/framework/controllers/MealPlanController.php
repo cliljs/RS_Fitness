@@ -59,7 +59,15 @@ switch ($act) {
             ]
         );
         break;
-
+        case "get_meal_info":
+            echo json_encode(
+                [
+                    "action"  => $_SERVER['REQUEST_URI'],
+                    "success" => 1,
+                    "data"    => $mealplan_model->get_meal_info($_GET['id'])
+                ]
+            );
+            break;
     default:
 
         break;

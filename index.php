@@ -306,9 +306,28 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
         loadMealsTaken($('#date_taken').val());
         $('body').on('click', '.btnViewMeal', function() {
           let dataID = $(this).attr('data-id');
-          fireAjax('', '', false).then(function(data) {
+          fireAjax('MealPlanController.php?action=get_meal_info&id=' + dataID, '', false).then(function(data) {
             console.log(data);
             let objData = $.parseJSON(data.trim()).data;
+            $('#imgPicture').attr('src', image_url + objData.plan_picture);
+            $('#plan_name').val(objData.plan_name);
+            $('#plan_description').val(objData.plan_description);
+            $('#plan_category').val(objData.plan_category);
+            fireAjax('MealIngredientsController.php?action=get_meal_ingredients&meal_pk=' + dataID, '', false).then(function(data2) {
+              console.log(data2);
+              let obj2Data = $.parseJSON(data2.trim()).data;
+              let retval = '';
+              $.each(obj2Data, function(k, v) {
+                retval += '<tr>';
+                retval += '<td>' + v.ingredient_name + '</td>';
+                retval += '<td>' + v.calories + '</td>';
+                retval += '</tr>';
+              });
+              $('#tblIngredientsBody').html(retval);
+            }).catch(function(err2) {
+              console.log(err2);
+            })
+
             $('#mdlMealInfo').modal({
               backdrop: "static"
             });
@@ -380,7 +399,7 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
             }
           });
         });
-        $('#btnSeachMyMeals').on('click',function(){
+        $('#btnSeachMyMeals').on('click', function() {
           loadMealsTaken($('#date_taken').val());
         });
         $('#frmCustomMeal').on('submit', function(e) {
@@ -458,6 +477,19 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
             }
           })
         });
+        $('body').on('click','.btnMealMgmtEdit',function(){
+          let dataID = $(this).attr('data-id');
+          fireAjax('MealPlanController.php?action=get_meal_info&id=' + dataID,'',false).then(function(data){
+            console.log(data);
+            let objData = $.parseJSON(data.trim()).data;
+            $('#editMealModalLabel').attr('data-id',dataID);
+
+            $('#editMealModal').modal({backdrop:"static"});
+          }).catch(function(err){
+            console.log(err);
+            fireSwal('Edit Meal','Failed to retrieve meal information. Please try again','error');
+          })
+        })
         $('#mdlMealRegister').on('submit', function(e) {
           e.preventDefault();
 
@@ -555,6 +587,32 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
             fireSwal('New Workout', 'Failed to add workout. Please try again', 'error');
           })
         });
+
+        $('#frmEditWorkout').on('submit', function(e) {
+          e.preventDefault();
+          let workoutID = $('#mdlNewWorkoutLabel').attr('data-id');
+          let payload = {
+            calories_burned: $('#edit_calories_burned').val(),
+            workout_duration: $('#edit_workout_duration').val(),
+            description: $('#edit_description').val(),
+            workout_date: $('#edit_workout_date').val()
+          };
+          fireAjax('WorkoutController.php?action=update_workout&id=' + workoutID, payload, false).then(function(data) {
+            console.log(data);
+            let objSuccess = $.parseJSON(data.trim()).success;
+            if (objSuccess == 1) {
+              loadWorkout();
+              $('#frmEditWorkout').trigger('reset');
+              $('#mdlEditWorkout').modal('hide');
+              fireSwal('Edit Workout', 'Workout updated successfully', 'success');
+            } else {
+              fireSwal('Edit Workout', 'Failed to update workout. Please try again', 'error');
+            }
+          }).catch(function(err) {
+            console.log(err);
+            fireSwal('Edit Workout', 'Failed to update workout. Please try again', 'error');
+          })
+        });
         $('body').on('click', '.btnDeleteWorkout', function() {
           let dataID = $(this).attr('data-id');
           let thisButton = $(this);
@@ -582,6 +640,25 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
                 fireSwal('Delete Workout', 'Failed to delete workout. Please try again', 'error');
               })
             }
+          })
+        })
+
+        $('body').on('click', '.btnEditWorkout', function() {
+          let dataID = $(this).attr('data-id');
+          fireAjax('WorkoutController.php?action=get_workout_info&id=' + dataID, '', false).then(function(data) {
+            console.log(data);
+            let objData = $.parseJSON(data.trim()).data;
+            $('#mdlNewWorkoutLabel').attr('data-id', dataID);
+            $('#edit_workout_date').val(objData.workout_date);
+            $('#edit_description').val(objData.description);
+            $('#edit_workout_duration').val(objData.workout_duration);
+            $('#edit_calories_burned').val(objData.calories_burned);
+            $('#mdlEditWorkout').modal({
+              backdrop: "static"
+            });
+          }).catch(function(err) {
+            console.log(err);
+            fireSwal('Edit Workout', 'Failed to retrieve workout information. Please try again', 'error');
           })
         })
       } else if (me == "history") {
@@ -634,7 +711,7 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
           retval += '<tr>';
           retval += '<td>' + v.workout_date + '</td>';
           retval += '<td>' + v.description + '</td>';
-          retval += '<td>' + +'</td>';
+          retval += '<td>' + v.workout_duration + '</td>';
           retval += '<td>' + v.calories_burned + '</td>';
           retval += '<td class = "text-right">';
           retval += '<button data-id = "' + v.id + '" class="btnEditWorkout btn btn-primary btn-sm"><i class="fa fa-edit"></i>&nbsp;Edit</button>';
@@ -725,63 +802,66 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
         console.log(err);
         fireSwal('Meals', 'Failed to retrieve all meals. Please reload the page', 'error');
       })
-      fireAjax('MealPlanController.php?action=get_meal_by_category&type=' + meal_type, '', false).then(function(data) {
-        console.log(data);
-        let objData = $.parseJSON(data.trim()).data;
-        let retvalMobile = '';
-        let retvalPC = '';
-        let tempCount = 1;
-        let desc = '';
-        $.each(objData, function(k, v) {
-          desc = v.plan_description;
-          if (desc.length > 90) {
-            desc = desc.substr(0, 86) + '...';
-          }
-          if (tempCount == 1 && retvalPC == '') {
-            retvalPC += '<div class="carousel-item active">';
-            retvalPC += '<div class = "row">';
-          } else if (tempCount == 1 && retvalPC != '') {
-            retvalPC += '<div class="carousel-item">';
-            retvalPC += '<div class = "row">';
-          }
-          retvalPC += '<div class="col-md-4">';
-          retvalPC += '<div class="product-block">';
-          retvalPC += '<img class="d-block w-100 mb-2" src="https://via.placeholder.com/800x400" alt="Product">';
-          retvalPC += '<div class="product-info">';
-          retvalPC += '  <h4>' + v.plan_name + '</h4>';
-          retvalPC += '  <p><button class="btn btn-outline-secondary btn-sm">' + v.total_calories + ' Calories</button></p>';
-          retvalPC += '  <p class="text-muted">' + desc + '</p>';
-          retvalPC += '  <div class="row">';
-          retvalPC += '    <div class="col-md-12 text-right">';
-          retvalPC += '      <button data-id = "' + v.id + '" class="btnAddMeal btn btn-sm btn-success"><i class = "fa fa-plus"></i>&nbsp;Add to daily meal</button>';
-          retvalPC += '      <button data-id = "' + v.id + '" class="btnViewMeal btn btn-sm btn-secondary"><i class = "fa fa-view"></i>&nbsp;More Details</button>';
-          retvalPC += '    </div>';
-          retvalPC += '  </div>';
-          retvalPC += '</div>';
-          retvalPC += '</div>';
-          retvalPC += '</div>';
-          tempCount++;
-          if (tempCount == 4) {
+      if (me == "meal") {
+        fireAjax('MealPlanController.php?action=get_meal_by_category&type=' + meal_type, '', false).then(function(data) {
+          console.log(data);
+          let objData = $.parseJSON(data.trim()).data;
+          let retvalMobile = '';
+          let retvalPC = '';
+          let tempCount = 1;
+          let desc = '';
+          $.each(objData, function(k, v) {
+            desc = v.plan_description;
+            if (desc.length > 90) {
+              desc = desc.substr(0, 86) + '...';
+            }
+            if (tempCount == 1 && retvalPC == '') {
+              retvalPC += '<div class="carousel-item active">';
+              retvalPC += '<div class = "row">';
+            } else if (tempCount == 1 && retvalPC != '') {
+              retvalPC += '<div class="carousel-item">';
+              retvalPC += '<div class = "row">';
+            }
+            retvalPC += '<div class="col-md-4">';
+            retvalPC += '<div class="product-block">';
+            retvalPC += '<img class="d-block w-100 mb-2" src="https://via.placeholder.com/800x400" alt="Product">';
+            retvalPC += '<div class="product-info">';
+            retvalPC += '  <h4>' + v.plan_name + '</h4>';
+            retvalPC += '  <p><button class="btn btn-outline-secondary btn-sm">' + v.total_calories + ' Calories</button></p>';
+            retvalPC += '  <p class="text-muted">' + desc + '</p>';
+            retvalPC += '  <div class="row">';
+            retvalPC += '    <div class="col-md-12 text-right">';
+            retvalPC += '      <button data-id = "' + v.id + '" class="btnAddMeal btn btn-sm btn-success"><i class = "fa fa-plus"></i>&nbsp;Add to daily meal</button>';
+            retvalPC += '      <button data-id = "' + v.id + '" class="btnViewMeal btn btn-sm btn-secondary"><i class = "fa fa-view"></i>&nbsp;More Details</button>';
+            retvalPC += '    </div>';
+            retvalPC += '  </div>';
             retvalPC += '</div>';
             retvalPC += '</div>';
-            tempCount = 1;
+            retvalPC += '</div>';
+            tempCount++;
+            if (tempCount == 4) {
+              retvalPC += '</div>';
+              retvalPC += '</div>';
+              tempCount = 1;
+            }
+
+          });
+
+          if (tempCount < 4) {
+
+            for (let i = tempCount; i < 4; i++) {
+              console.log("PROC");
+              retvalPC += '<div class="col-md-4"><div class="product-block" style = "border: 0px !important;"><div class="product-info"></div></div></div>';
+            }
           }
+          console.log(tempCount);
+          $('#carouselPCInner').html(retvalPC);
+        }).catch(function(err) {
+          console.log(err);
+          fireSwal('Meals', 'Failed to retrieve list of meals. Please reload the page', 'error');
+        })
+      }
 
-        });
-
-        if (tempCount < 4) {
-
-          for (let i = tempCount; i < 4; i++) {
-            console.log("PROC");
-            retvalPC += '<div class="col-md-4"><div class="product-block" style = "border: 0px !important;"><div class="product-info"></div></div></div>';
-          }
-        }
-        console.log(tempCount);
-        $('#carouselPCInner').html(retvalPC);
-      }).catch(function(err) {
-        console.log(err);
-        fireSwal('Meals', 'Failed to retrieve list of meals. Please reload the page', 'error');
-      })
     }
 
     function loadUsers() {

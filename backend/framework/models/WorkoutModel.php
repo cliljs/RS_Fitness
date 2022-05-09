@@ -18,6 +18,7 @@ class WorkoutModel {
         $arr = [
             "user_id"         => $_SESSION['id'],
             "calories_burned" => $payload['calories_burned'],
+            "workout_duration" => $payload['workout_duration'],
             "description"     => $payload['description'],
             "workout_date"     => $payload['workout_date'],
         ];
@@ -38,7 +39,12 @@ class WorkoutModel {
     public function get_user_workout()
     {
         global $db, $common;
-        return $db->get_list("SELECT * FROM {$this->base_table} WHERE user_id = ?", [$_SESSION['id']]);
+        return $db->get_list("SELECT * FROM {$this->base_table} WHERE user_id = ? order by workout_date asc", [$_SESSION['id']]);
+    }
+    public function get_workout_info($pk = 0)
+    {
+        global $db;
+        return $db->get_row("SELECT * FROM {$this->base_table} WHERE user_id = ? and id = ?", [$_SESSION['id'],$pk]);
     }
 }
 $workout_model = new WorkoutModel();

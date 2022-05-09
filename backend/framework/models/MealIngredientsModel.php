@@ -39,7 +39,7 @@ class MealIngredientsModel
     public function get_meal_ingredients($meal_pk = null)
     {
         global $db, $common;
-        return $db->get_list("SELECT * FROM {$this->base_table} WHERE meal_id = ? AND created_by = ?", [$meal_pk, $_SESSION['id']]);
+        return $db->get_list("SELECT * FROM {$this->base_table} WHERE meal_id = ?", [$meal_pk]);
     }
 
 }

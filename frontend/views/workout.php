@@ -52,6 +52,10 @@
                 <input class="form-control" type="text" id="description" name="description" required />
               </div>
               <div class="form-group">
+                <label>Workout Duration</label>
+                <input class="form-control" type="text" id="workout_duration" name="workout_duration" required />
+              </div>
+              <div class="form-group">
                 <label>Estimated Burned Calories</label>
                 <input class="form-control" type="number" id="calories_burned" name="calories_burned" required />
               </div>
@@ -61,6 +65,46 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           <button type="submit" class="btn btn-info">Register</button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<div class="modal fade" id="mdlEditWorkout" tabindex="-1" role="dialog" aria-labelledby="mdlEditWorkoutLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+
+    <div class="modal-content">
+      <form id="frmEditWorkout">
+        <div class="modal-header">
+          <h5 class="modal-title" id="mdlNewWorkoutLabel">Edit Workout</h5>
+        </div>
+        <div class="modal-body">
+          <div class="row p-2">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label>Workout Date</label>
+                <input class="form-control" type="date" id="edit_workout_date" name="edit_workout_date" required />
+              </div>
+              <div class="form-group">
+                <label>Workout Description</label>
+                <input class="form-control" type="text" id="edit_description" name="edit_description" required />
+              </div>
+              <div class="form-group">
+                <label>Workout Duration</label>
+                <input class="form-control" type="text" id="edit_workout_duration" name="edit_workout_duration" required />
+              </div>
+              <div class="form-group">
+                <label>Estimated Burned Calories</label>
+                <input class="form-control" type="number" id="edit_calories_burned" name="edit_calories_burned" required />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-info">Update</button>
         </div>
       </form>
     </div>

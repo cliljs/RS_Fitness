@@ -117,7 +117,7 @@
 
 
   <div class="modal fade" id="mdlMealInfo" tabindex="-1" role="dialog" aria-labelledby="mdlMealInfoLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
 
       <div class="modal-content">
         <div class="modal-header">
@@ -134,16 +134,16 @@
             <div class="col-md-12 col-lg-6">
               <div class="form-group row">
                 <label>Meal Name</label>
-                <input class="form-control" type="text" id="plan_name" name="plan_name">
+                <input readonly class="form-control" type="text" id="plan_name" name="plan_name">
               </div>
               <div class="form-group row">
                 <label>Description</label>
-                <input class="form-control" type="text" id="plan_description" name="plan_description">
+                <textarea readonly rows = "5" class="form-control" id="plan_description" name="plan_description"></textarea>
               </div>
 
               <div class="form-group row">
                 <label>Category</label>
-                <input type="text" id="plan_category" name="plan_category" class="form-control">
+                <input readonly type="text" id="plan_category" name="plan_category" class="form-control">
               </div>
 
 
@@ -161,7 +161,7 @@
                     <tr>
                       <th>Ingredient Name</th>
                       <th>Calories</th>
-                      <th></th>
+                     
                     </tr>
                   </thead>
                   <tbody id="tblIngredientsBody">
