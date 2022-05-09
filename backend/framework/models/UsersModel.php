@@ -17,12 +17,12 @@ class UsersModel
     {
         global $db, $common;
 
-        $meal_taken = $db->get_list("SELECT SUM(calories_obtained) AS calories_ob, meal_date 
+        $meal_taken = $db->get_list("SELECT SUM(calories_obtained) AS title, meal_date AS `start`
                                     FROM rs_student_meal 
                                     WHERE YEAR(meal_date) = ? AND MONTH(meal_date) = ? AND user_id = ?
                                     GROUP BY meal_date", [$payload['year'], $payload['month'], $_SESSION['id']]);
 
-        $calories_burned = $db->get_list("SELECT SUM(calories_burned) AS burned, workout_date 
+        $calories_burned = $db->get_list("SELECT SUM(calories_burned) AS title, workout_date AS `start`
                                           FROM rs_workout
                                           WHERE user_id = ? AND MONTH(workout_date) = ? AND YEAR(workout_date) = ? 
                                           GROUP BY workout_date", [$_SESSION['id'], $payload['month'], $payload['year']]);
