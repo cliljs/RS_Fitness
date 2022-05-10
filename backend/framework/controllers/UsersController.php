@@ -77,6 +77,21 @@ switch ($act) {
             "data"    => $user_model->get_admin_criteria($_GET)
         ]);
         break;
+
+    case "get_admin_header":
+        echo json_encode([
+            "action"  => $_SERVER['REQUEST_URI'],
+            "success" => 1,
+            "data"    => $user_model->get_admin_header()
+        ]);
+        break;
+    case "get_all_students":
+        echo json_encode([
+            "action"  => $_SERVER['REQUEST_URI'],
+            "success" => 1,
+            "data"    => $user_model->get_all_students()
+        ]);
+        break;
     default:
         break;
 }

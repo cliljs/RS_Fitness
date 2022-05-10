@@ -13,38 +13,57 @@ class UsersModel
         $this->data_helper = new DataController($this->base_table);
     }
 
-    public function get_admin_criteria($payload = []) {
+    public function get_admin_header()
+    {
+        global $db;
+        return $db->get_row("Select
+                            (Select COUNT(id) from {$this->base_table} where is_admin = 0) as total_users,
+                            (Select COUNT(id) from {$this->base_table} where is_admin = 0 and gender = 'Male') as total_male,
+                            (Select COUNT(id) from {$this->base_table} where is_admin = 0 and gender = 'Female') as total_female,
+                            (Select COUNT(id) from {$this->base_table} where is_admin = 1) as admins
+        ", []);
+    }
+    public function get_admin_criteria($payload = [])
+    {
         global $db, $common;
         $kwiri = '';
         unset($payload['action']);
-        if($payload['gender'] == 'All'){
+        if ($payload['gender'] == 'All') {
             unset($payload['gender']);
-        } else{
+        } else {
             $kwiri = 'AND ru.gender = ?';
         }
 
-        $student_meal = $db->get_list("SELECT rss.meal_date,  CAST(SUM(rss.calories_obtained) AS int) AS title
+        $student_meal = $db->get_list(
+            "SELECT rss.meal_date,  CAST(SUM(rss.calories_obtained) AS int) AS title
                                       FROM rs_users AS ru
                                       INNER JOIN rs_student_meal AS rss ON ru.id = rss.user_id
                                       WHERE (rss.meal_date between ? and ?) {$kwiri}
                                       
                                       GROUP BY rss.meal_date",
-                                      array_values($payload));
+            array_values($payload)
+        );
 
-        $student_workout = $db->get_list("SELECT  rw.workout_date, CAST(SUM(rw.calories_burned) AS int) AS title
+        $student_workout = $db->get_list(
+            "SELECT  rw.workout_date, CAST(SUM(rw.calories_burned) AS int) AS title
                                       FROM rs_users AS ru
                                       INNER JOIN rs_workout AS rw ON ru.id = rw.user_id
                                       WHERE (rw.workout_date between ? and ?) {$kwiri}
                                    
                                       GROUP BY rw.workout_date",
-                                      array_values($payload));                            
+            array_values($payload)
+        );
 
         return [
-            "workout"      =>  $student_workout, 
-            "student_meal" =>  $student_meal 
+            "workout"      =>  $student_workout,
+            "student_meal" =>  $student_meal
         ];
     }
-
+    public function get_all_students()
+    {
+        global $db;
+        return $db->get_list("Select id,(CONCAT(lastname,', ',firstname,' ',middlename)) as fullname from {$this->base_table} where is_admin = 0 order by lastname asc",[]);
+    }
     public function get_users_history($payload = [])
     {
         global $db, $common;
@@ -115,7 +134,7 @@ class UsersModel
         try {
             $has_user = $this->get_user_gmail($payload['gmail']);
             if (empty($has_user)) {
-         
+
                 $arr = [
                     "gmail_address" => $payload['gmail'],
                     "firstname"     => $payload['firstname'],
@@ -129,9 +148,9 @@ class UsersModel
                 ];
                 $fields  = $common->get_insert_fields($arr);
                 $db->insert("{$this->base_table} {$fields}", array_values($arr));
-               
+
                 $retvalue = 1;
-            } else{
+            } else {
                 $retvalue = -1;
             }
         } catch (\Throwable $th) {

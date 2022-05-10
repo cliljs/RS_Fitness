@@ -70,6 +70,18 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
   <link href="frontend/plugins/fullcalendar/dist/fullcalendar.print.css" rel="stylesheet" media="print">
   <link href="frontend/plugins/slider/animate.min.css" rel="stylesheet">
   <style>
+    .form-control-borderless {
+      border: none;
+    }
+
+    .form-control-borderless:hover,
+    .form-control-borderless:active,
+    .form-control-borderless:focus {
+      border: none;
+      outline: none;
+      box-shadow: none;
+    }
+
     .product-info {
       padding: 15px !important;
 
@@ -150,6 +162,14 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
     .counter-box.colored .counter {
       color: #fff
     }
+
+    .profile_info {
+      padding-top: 20px !important;
+    }
+
+    .profile_info span {
+      line-height: 20px !important;
+    }
   </style>
 </head>
 
@@ -158,9 +178,9 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
     <div class="main_container">
       <div class="col-md-3 left_col">
         <div class="left_col scroll-view">
-          <div class="navbar nav_title" style="border: 0;">
-            <p class="site_title"><span>MaLoFit</span></p>
-            <p class="site_title2">MacroNutrient &amp; Calories Fitness</p>
+          <div class="navbar nav_title" style="border: 0;display:none;">
+            <a href="#" class="site_title"><span>MaLoFit<br><small>MacroNutrient &amp; Calories Fitness</small></span></a>
+            <!-- <a href = "#" class="site_title">MacroNutrient &amp; Calories Fitness</a> -->
           </div>
 
           <div class="clearfix"></div>
@@ -243,7 +263,16 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
         </div>
       </div>
 
+      <div class="top_nav">
+        <div class="nav_menu">
+          <div class="nav toggle pb-2">
+            <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+          </div>
+          <nav class="nav navbar-nav">
 
+          </nav>
+        </div>
+      </div>
 
       <div class="right_col" role="main">
         <?php
@@ -327,6 +356,7 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
   <!-- <script src="frontend/plugins/datatables.net-scroller/js/dataTables.scroller.min.js"></script> -->
   <script src="frontend/plugins/echarts/dist/echarts.min.js"></script>
   <!-- Custom Theme Scripts -->
+  <!-- <script src="frontend/plugins/devbridge-autocomplete/dist/jquery.autocomplete.min.js"></script> -->
   <script src="frontend/build/js/custom.min.js"></script>
   <script src="frontend/plugins/sweetalert2/sweetalert2.min.js"></script>
   <script src="frontend/build/js/common.js"></script>
@@ -459,20 +489,17 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
         });
       } else if (me == null || me == "home") {
         //alert(moment().format('YYYY-MM-DD'));
+        let sGender = "All";
         $("#reportrange span").html(moment().startOf("month").format("MMMM D, YYYY") + " - " + moment().endOf("month").format("MMMM D, YYYY"))
-        $('.counter-value').each(function() {
-          $(this).prop('Counter', 0).animate({
-            Counter: $(this).text()
-          }, {
-            duration: 1000,
-            easing: 'swing',
-            step: function(now) {
-              $(this).text(Math.ceil(now));
-            }
-          });
-        });
-        //todo - add counter ajax
-        init_echarts(moment().startOf("month").format('YYYY-MM-DD'),moment().endOf("month").format('YYYY-MM-DD'));
+        $(".aGenderSelect").on('click', function() {
+          let aThis = $(this);
+          sGender = aThis.html();
+
+          init_echarts(moment().startOf("month").format('YYYY-MM-DD'), moment().endOf("month").format('YYYY-MM-DD'), sGender);
+        })
+
+        loadAdminHeader();
+        init_echarts(moment().startOf("month").format('YYYY-MM-DD'), moment().endOf("month").format('YYYY-MM-DD'), 'All');
       } else if (me == "mealmgmt") {
         loadAllMeals();
         let ingredients_arr = [];
@@ -806,23 +833,23 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
           })
         })
       } else if (me == "history") {
-        // let objData = [{
-        //     title: "Calories gained: 2500",
-        //     start: "2022-05-08",
-        //     disableResizing: true
-        //   },
-        //   {
-        //     title: "Calories burned: 1200",
-        //     start: "2022-05-08",
-        //     disableResizing: true
-        //   },
-        //   {
-        //     title: "wews",
-        //     start: "2022-05-15"
-        //   }
-        // ];
-        // init_calendar(objData);
-        plotCalendar(5, 2022);
+        let e = new Date();
+        
+        plotCalendar(e.getMonth() + 1, e.getFullYear());
+      } else if (me == "records") {
+        fireAjax('UsersController.php?action=get_all_students', '', false).then(function(data) {
+          console.log(data);
+          let retval = '<option disabled selected>Select Student\'s Name</option>'
+          let objData = $.parseJSON(data.trim()).data;
+          $.each(objData, function(k, v) {
+            retval += '<option value = "' + v.id + '">' + v.fullname + '</option>';
+          });
+          $('#rptInp1').html(retval);
+        }).catch(function(err) {
+          console.log(err);
+          fireSwal('Records', 'Failed to retrieve list of students. Please reload the page', 'error');
+        })
+
       }
     });
 
@@ -835,6 +862,8 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
     };
 
     function plotCalendar(m, y) {
+      console.log(m);
+      console.log(y);
       fireAjax('UsersController.php?action=get_user_history&month=' + m + '&year=' + y, '', false).then(function(data) {
         console.log(data);
 
@@ -1055,6 +1084,30 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
       }).catch(function(err) {
         console.log(err);
         fireSwal('User Management', 'Failed to retrieve list of users. Please reload the page', 'error');
+      })
+    }
+
+    function loadAdminHeader() {
+      fireAjax('UsersController.php?action=get_admin_header', '', false).then(function(data) {
+        console.log(data);
+        let objData = $.parseJSON(data.trim()).data;
+        $('#countUsers').html(objData.total_users);
+        $('#countMales').html(objData.total_female);
+        $('#countFemales').html(objData.total_female);
+        $('#countAdmins').html(objData.admins);
+        $('.counter-value').each(function() {
+          $(this).prop('Counter', 0).animate({
+            Counter: $(this).text()
+          }, {
+            duration: 1000,
+            easing: 'swing',
+            step: function(now) {
+              $(this).text(Math.ceil(now));
+            }
+          });
+        });
+      }).catch(function(err) {
+        console.log(err);
       })
     }
 
