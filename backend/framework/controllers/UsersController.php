@@ -89,7 +89,28 @@ switch ($act) {
         echo json_encode([
             "action"  => $_SERVER['REQUEST_URI'],
             "success" => 1,
-            "data"    => $user_model->get_all_students()
+            "data"    => $user_model->get_all_students($_POST)
+        ]);
+        break;
+    case "get_record_meals":
+        echo json_encode([
+            "action"  => $_SERVER['REQUEST_URI'],
+            "success" => 1,
+            "data"    => $user_model->get_record_meals($_POST)
+        ]);
+        break;
+    case "get_record_workouts":
+        echo json_encode([
+            "action"  => $_SERVER['REQUEST_URI'],
+            "success" => 1,
+            "data"    => $user_model->get_record_workouts($_POST)
+        ]);
+        break;
+    case "get_student_activities":
+        echo json_encode([
+            "action"  => $_SERVER['REQUEST_URI'],
+            "success" => 1,
+            "data"    => $user_model->get_student_activities($_POST)
         ]);
         break;
     default:

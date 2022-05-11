@@ -6,6 +6,14 @@ let months = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"];
 
 function fireAjax(path, payload, is_multi) {
+    $('body').preloader({
+        text: 'Loading. Please wait...',
+        percent: '',
+        duration: '',
+        zIndex: '',
+        setRelative: true
+
+    });
     return new Promise(function (resolve, reject) {
 
         if (is_multi) {
@@ -18,9 +26,11 @@ function fireAjax(path, payload, is_multi) {
                 contentType: false,
                 processData: false,
                 success: function (data) {
+                    $('body').preloader('remove');
                     resolve(data);
                 },
                 error: function (err) {
+                    $('body').preloader('remove');
                     reject(err);
                 }
             })
@@ -31,9 +41,11 @@ function fireAjax(path, payload, is_multi) {
                 url: base_url + path,
                 data: payload,
                 success: function (data) {
+                    $('body').preloader('remove');
                     resolve(data);
                 },
                 error: function (err) {
+                    $('body').preloader('remove');
                     reject(err);
                 }
             })

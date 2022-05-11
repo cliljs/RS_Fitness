@@ -28,8 +28,8 @@ if ($time >= "06:00:00" && $time < "09:00:00") {
 $role = ($_SESSION['is_admin'] == 1) ? 'Administrator' : 'Standard User';
 $is_admin = ($_SESSION['is_admin'] == 1) ? true : false;
 $current_page = (empty($_GET['view'])) ? 'home' : $_GET['view'];
-
 $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_page;
+$current_page = ((!$is_admin) && ($current_page == 'home')) ? "meal" : $current_page;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -64,6 +64,7 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
 
   <!-- Custom Theme Style -->
   <link href="frontend/build/css/custom.min.css" rel="stylesheet">
+  <link href="frontend/build/css/preloader.css" rel="stylesheet">
   <link href="frontend/plugins/sweetalert2/sweetalert2.min.css" rel="stylesheet">
 
   <link href="frontend/plugins/fullcalendar/dist/fullcalendar.min.css" rel="stylesheet">
@@ -201,30 +202,20 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
 
           <!-- sidebar menu -->
           <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
-            <div class="menu_section">
-              <h3>Health &amp; Fitness</h3>
-              <ul class="nav side-menu">
-                <li <?php if ($current_page == 'home' || $current_page == 'admin') echo 'class="current-page"'; ?>><a href="index.php?view=home"><i class="fa fa-home"></i> Home</a>
-
-                </li>
-                <li <?php if ($current_page == 'meal') echo 'class="current-page"'; ?>><a href="index.php?view=meal"><i class="fa fa-cutlery"></i> Meal</a>
-
-                </li>
-                <li <?php if ($current_page == 'workout') echo 'class="current-page"'; ?>><a href="index.php?view=workout"><i class="fa fa-bicycle"></i> Workout</a>
-
-                </li>
-                <li <?php if ($current_page == 'history') echo 'class="current-page"'; ?>><a href="index.php?view=history"><i class="fa fa-calendar"></i> History</a>
-
-                </li>
-
-              </ul>
-            </div>
+            
+           
             <?php
             if ($is_admin) {
               echo '<div class="menu_section">';
               echo '<h3>Admin</h3>';
               echo '<ul class="nav side-menu">';
 
+              echo '  <li ';
+              if ($current_page == 'home' || $current_page == 'admin') echo 'class="current-page"';
+              echo '><a href="index.php?view=home"><i class="fa fa-home"></i>Home</a>';
+
+              echo '  </li>';
+              
               echo '  <li ';
               if ($current_page == 'mealmgmt') echo 'class="current-page"';
               echo '><a href="index.php?view=mealmgmt"><i class="fa fa-cutlery"></i>Meal Management</a>';
@@ -241,6 +232,29 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
               echo '><a href="index.php?view=records"><i class="fa fa-book"></i>Records</a>';
 
               echo '  </li>';
+              echo '</ul>';
+              echo '</div>';
+            } else{
+              echo '<div class="menu_section">';
+              echo '<h3>Health &amp; Fitness</h3>';
+              echo '<ul class="nav side-menu">';
+          
+              echo '<li ';
+              if ($current_page == 'meal') echo 'class="current-page"';
+              echo '><a href="index.php?view=meal"><i class="fa fa-cutlery"></i> Meal</a>';
+
+              echo '</li>';
+              echo '<li ';
+              if ($current_page == 'workout') echo 'class="current-page"';
+              echo '><a href="index.php?view=workout"><i class="fa fa-bicycle"></i> Workout</a>';
+
+              echo '</li>';
+              echo '<li ';
+              if ($current_page == 'history') echo 'class="current-page"';
+              echo '<a href="index.php?view=history"><i class="fa fa-calendar"></i> History</a>';
+
+              echo '  </li>';
+
               echo '</ul>';
               echo '</div>';
             }
@@ -358,6 +372,7 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
   <!-- Custom Theme Scripts -->
   <!-- <script src="frontend/plugins/devbridge-autocomplete/dist/jquery.autocomplete.min.js"></script> -->
   <script src="frontend/build/js/custom.min.js"></script>
+  <script src="frontend/build/js/jquery.preloader.min.js"></script>
   <script src="frontend/plugins/sweetalert2/sweetalert2.min.js"></script>
   <script src="frontend/build/js/common.js"></script>
   <script src="frontend/plugins/slider/main.js"></script>
@@ -367,6 +382,9 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
       dtMyMeals = null,
       dtWorkout = null,
       dtMeal = null,
+      dtRpt1 = null,
+      dtRpt2 = null,
+      dtRpt3 = null,
       dtMealMgmt = null;
     $(function() {
       let me = getUrlVars()['view'];
@@ -834,9 +852,123 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
         })
       } else if (me == "history") {
         let e = new Date();
-        
+
         plotCalendar(e.getMonth() + 1, e.getFullYear());
       } else if (me == "records") {
+        $('#frmRpt1').on('submit', function(e) {
+          e.preventDefault();
+          let payload = {
+            dt: $('#rptDT1').val()
+          };
+          fireAjax('UsersController.php?action=get_record_meals', payload, false).then(function(data) {
+            console.log(data);
+            let objData = $.parseJSON(data.trim()).data;
+            let retval = '';
+            $.each(objData, function(k, v) {
+              retval += '<tr>';
+              retval += '<td>' + v.lastname + '</td>';
+              retval += '<td>' + v.firstname + '</td>';
+              retval += '<td>' + v.middlename + '</td>';
+              retval += '<td>' + v.meal_name + '</td>';
+              retval += '<td>' + v.calories_obtained + '</td>';
+              retval += '</tr>';
+            });
+            if (dtRpt1 != null) {
+              dtRpt1.destroy();
+            }
+            $('#tblRpt1Body').html(retval);
+            dtRpt1 = $('#tblRpt1').DataTable({
+              "paging": true,
+              "searching": false,
+              "ordering": false,
+              "info": false,
+              "autoWidth": true,
+              "responsive": true
+            });
+          }).catch(function(err) {
+            console.log(err);
+            fireSwal('Records', 'Failed to retrieve records. Please try again', 'error');
+          })
+        });
+        $('#frmRpt2').on('submit', function(e) {
+          e.preventDefault();
+          let payload = {
+            dt: $('#rptDT2').val()
+          };
+          fireAjax('UsersController.php?action=get_record_workouts', payload, false).then(function(data) {
+            console.log(data);
+            let objData = $.parseJSON(data.trim()).data;
+            let retval = '';
+            $.each(objData, function(k, v) {
+              retval += '<tr>';
+              retval += '<td>' + v.lastname + '</td>';
+              retval += '<td>' + v.firstname + '</td>';
+              retval += '<td>' + v.middlename + '</td>';
+              retval += '<td>' + v.workout_duration + ' - ' + v.description + '</td>';
+              retval += '<td>' + v.calories_burned + '</td>';
+              retval += '</tr>';
+            });
+            if (dtRpt2 != null) {
+              dtRpt2.destroy();
+            }
+            $('#tblRpt2Body').html(retval);
+            dtRpt2 = $('#tblRpt2').DataTable({
+              "paging": true,
+              "searching": false,
+              "ordering": false,
+              "info": false,
+              "autoWidth": true,
+              "responsive": true
+            });
+          }).catch(function(err) {
+            console.log(err);
+            fireSwal('Records', 'Failed to retrieve records. Please try again', 'error');
+          })
+        });
+        $('#frmRpt3').on('submit', function(e) {
+          e.preventDefault();
+          let payload = {
+            dt: $('#rptDT3').val(),
+            student_pk: $('#rptInp1 option:selected').val()
+          };
+          fireAjax('UsersController.php?action=get_student_activities', payload, false).then(function(data) {
+            console.log(data);
+            let objData = $.parseJSON(data.trim()).data;
+            let retval = '';
+            $.each(objData, function(k, v) {
+              console.log(v.operand);
+              retval += '<tr>';
+            
+              if(v.operand == '+'){
+                retval += '<td><button class = "btn btn-md btn-success"><i class = "fa fa-cutlery"></i>&nbsp;Meal</button></td>';
+                retval += '<td>' + v.meal_name + '</td>';
+                retval += '<td>' + v.calories_obtained + '</td>';
+              } else{
+                retval += '<td><button class = "btn btn-md btn-danger"><i class = "fa fa-bicycle"></i>&nbsp;Workout</button></td>'
+                retval += '<td>' + v.workout_duration + ' - ' + v.description + '</td>';
+                retval += '<td>' + v.calories_burned + '</td>';
+              }
+              
+              
+              retval += '</tr>';
+            });
+            if (dtRpt3 != null) {
+              dtRpt3.destroy();
+            }
+            $('#tblRpt3Body').html(retval);
+            dtRpt3 = $('#tblRpt3').DataTable({
+              "paging": false,
+              "searching": false,
+              "ordering": false,
+              "info": false,
+              "autoWidth": true,
+              "responsive": true
+            });
+          }).catch(function(err) {
+            console.log(err);
+            fireSwal('Records', 'Failed to retrieve records. Please try again', 'error');
+          })
+        });
         fireAjax('UsersController.php?action=get_all_students', '', false).then(function(data) {
           console.log(data);
           let retval = '<option disabled selected>Select Student\'s Name</option>'
@@ -862,8 +994,7 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
     };
 
     function plotCalendar(m, y) {
-      console.log(m);
-      console.log(y);
+
       fireAjax('UsersController.php?action=get_user_history&month=' + m + '&year=' + y, '', false).then(function(data) {
         console.log(data);
 
@@ -1092,7 +1223,7 @@ $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_
         console.log(data);
         let objData = $.parseJSON(data.trim()).data;
         $('#countUsers').html(objData.total_users);
-        $('#countMales').html(objData.total_female);
+        $('#countMales').html(objData.total_male);
         $('#countFemales').html(objData.total_female);
         $('#countAdmins').html(objData.admins);
         $('.counter-value').each(function() {

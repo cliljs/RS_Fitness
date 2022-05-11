@@ -34,7 +34,7 @@
             </ul>
             <div class="tab-content" id="myTabContent">
               <div class="tab-pane fade show active" id="meal" role="tabpanel" aria-labelledby="meal-tab">
-                <form class="form-inline pull-right">
+                <form id="frmRpt1" class="form-inline pull-right">
 
                   <div class="form-group mx-sm-3 mb-2">
 
@@ -42,9 +42,23 @@
                   </div>
                   <button type="submit" class="btn btn-primary mb-2"><i class="fa fa-search"></i> &nbsp;Filter</button>
                 </form>
+                <table id="tblRpt1" class="table table-hover table-striped">
+                  <thead>
+                    <tr>
+                      <th>Last Name</th>
+                      <th>First Name</th>
+                      <th>Middle Name</th>
+                      <th>Meal Taken</th>
+                      <th>Calories Gained</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tblRpt1Body">
+
+                  </tbody>
+                </table>
               </div>
               <div class="tab-pane fade" id="workout" role="tabpanel" aria-labelledby="workout-tab">
-                <form class="form-inline pull-right">
+                <form id="frmRpt2" class="form-inline pull-right">
 
                   <div class="form-group mx-sm-3 mb-2">
 
@@ -52,12 +66,26 @@
                   </div>
                   <button type="submit" class="btn btn-primary mb-2"><i class="fa fa-search"></i> &nbsp;Filter</button>
                 </form>
+                <table id="tblRpt2" class="table table-hover table-striped">
+                  <thead>
+                    <tr>
+                      <th>Last Name</th>
+                      <th>First Name</th>
+                      <th>Middle Name</th>
+                      <th>Workout</th>
+                      <th>Calories Burned</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tblRpt2Body">
+
+                  </tbody>
+                </table>
               </div>
               <div class="tab-pane fade" id="activity" role="tabpanel" aria-labelledby="activity-tab">
-                <form class="form-inline pull-right">
+                <form id="frmRpt3" class="form-inline pull-right">
                   <div class="form-group mx-sm-3 mb-2">
-                    <select id = "rptInp1" name = "rptInp1" class="select2_single form-control" tabindex="-1" required>
-                
+                    <select id="rptInp1" name="rptInp1" class="select2_single form-control" tabindex="-1" required>
+
                     </select>
                   </div>
                   <div class="form-group mx-sm-3 mb-2">
@@ -66,6 +94,18 @@
                   </div>
                   <button type="submit" class="btn btn-primary mb-2"><i class="fa fa-search"></i> &nbsp;Filter</button>
                 </form>
+                <table id="tblRpt3" class="table table-hover table-striped">
+                  <thead>
+                    <tr>
+                      <th>Activity</th>
+                      <th></th>
+                      <th>Calories</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tblRpt3Body">
+
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>

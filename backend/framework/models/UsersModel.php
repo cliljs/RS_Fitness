@@ -64,6 +64,24 @@ class UsersModel
         global $db;
         return $db->get_list("Select id,(CONCAT(lastname,', ',firstname,' ',middlename)) as fullname from {$this->base_table} where is_admin = 0 order by lastname asc",[]);
     }
+    public function get_record_meals($payload = [])
+    {
+        global $db;
+        return $db->get_list("Select acc.lastname,acc.firstname,acc.middlename, sm.meal_name,sm.calories_obtained from rs_student_meal sm INNER JOIN rs_users acc ON acc.id = sm.user_id where sm.meal_date = ?",[$payload['dt']]);
+    }
+    public function get_record_workouts($payload = [])
+    {
+        global $db;
+        return $db->get_list("Select acc.lastname,acc.firstname,acc.middlename, wk.description,wk.calories_burned, wk.workout_duration from rs_workout wk INNER JOIN rs_users acc ON acc.id = wk.user_id where wk.workout_date = ?",[$payload['dt']]);
+    }
+    public function get_student_activities($payload = [])
+    {
+        global $db;
+        $result1 =  $db->get_list("Select '+' as operand, acc.lastname,acc.firstname,acc.middlename, sm.meal_name,sm.calories_obtained from rs_student_meal sm INNER JOIN rs_users acc ON acc.id = sm.user_id where sm.meal_date = ? and acc.id = ?",array_values($payload));
+        $result2 =  $db->get_list("Select '-' as operand, acc.lastname,acc.firstname,acc.middlename, wk.description,wk.calories_burned, wk.workout_duration from rs_workout wk INNER JOIN rs_users acc ON acc.id = wk.user_id where wk.workout_date = ? and acc.id = ?",array_values($payload));
+        $merged = array_merge($result1, $result2);
+        return $merged;
+    }
     public function get_users_history($payload = [])
     {
         global $db, $common;
