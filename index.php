@@ -27,9 +27,18 @@ if ($time >= "06:00:00" && $time < "09:00:00") {
 
 $role = ($_SESSION['is_admin'] == 1) ? 'Administrator' : 'Standard User';
 $is_admin = ($_SESSION['is_admin'] == 1) ? true : false;
-$current_page = (empty($_GET['view'])) ? 'home' : $_GET['view'];
-$current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_page;
-$current_page = ((!$is_admin) && ($current_page == 'home')) ? "meal" : $current_page;
+$current_page = (empty($_GET['view'])) ? '404' : $_GET['view'];
+
+$admin_side = ["records","home","usermgmt","mealmgmt"];
+$user_side = ["meal","workout","history"];
+
+if($is_admin && in_array($current_page,$user_side)){
+  $current_page = "404";
+}
+
+if(!$is_admin && in_array($current_page,$admin_side)){
+  $current_page = "404";
+}
 
 ?>
 <!DOCTYPE html>
@@ -252,7 +261,7 @@ $current_page = ((!$is_admin) && ($current_page == 'home')) ? "meal" : $current_
               echo '</li>';
               echo '<li ';
               if ($current_page == 'history') echo 'class="current-page"';
-              echo '<a href="index.php?view=history"><i class="fa fa-calendar"></i> History</a>';
+              echo '><a href="index.php?view=history"><i class="fa fa-calendar"></i> History</a>';
 
               echo '  </li>';
 
@@ -293,7 +302,7 @@ $current_page = ((!$is_admin) && ($current_page == 'home')) ? "meal" : $current_
         <?php
         switch ($current_page) {
           case "home":
-            include "frontend/views/home.php";
+            include "frontend/views/admin.php";
             break;
           case "admin":
             include "frontend/views/admin.php";
@@ -506,7 +515,7 @@ $current_page = ((!$is_admin) && ($current_page == 'home')) ? "meal" : $current_
             fireSwal('Custom Meal', 'Failed to add custom meal. Please try again', 'error');
           })
         });
-      } else if (me == null || me == "home") {
+      } else if (me == "home") {
         //alert(moment().format('YYYY-MM-DD'));
         let sGender = "All";
         $("#reportrange span").html(moment().startOf("month").format("MMMM D, YYYY") + " - " + moment().endOf("month").format("MMMM D, YYYY"))
@@ -1175,6 +1184,7 @@ $current_page = ((!$is_admin) && ($current_page == 'home')) ? "meal" : $current_
         let retvalPC = '';
         let tempCount = 1;
         let desc = '';
+        //pc
         $.each(objData, function(k, v) {
           desc = v.plan_description;
           if (desc.length > 90) {
@@ -1211,16 +1221,54 @@ $current_page = ((!$is_admin) && ($current_page == 'home')) ? "meal" : $current_
           }
 
         });
+      
+        //mobile
+        $.each(objData, function(k, v) {
+          desc = v.plan_description;
+          if (desc.length > 90) {
+            desc = desc.substr(0, 86) + '...';
+          }
+          if (retvalMobile == '') {
+            retvalMobile += '<div class="carousel-item active">';
+            retvalMobile += '<div class = "row">';
+          } else if (retvalMobile != '') {
+            retvalMobile += '<div class="carousel-item">';
+            retvalMobile += '<div class = "row">';
+          }
+          retvalMobile += '<div class="col-md-4">';
+          retvalMobile += '<div class="product-block">';
+          retvalMobile += '<img class="d-block w-100 mb-2" src="https://via.placeholder.com/800x400" alt="Product">';
+          retvalMobile += '<div class="product-info">';
+          retvalMobile += '  <h4>' + v.plan_name + '</h4>';
+          retvalMobile += '  <p><button class="btn btn-outline-secondary btn-sm">' + v.total_calories + ' Calories</button></p>';
+          retvalMobile += '  <p class="text-muted">' + desc + '</p>';
+          retvalMobile += '  <div class="row">';
+          retvalMobile += '    <div class="col-md-12 text-right">';
+          retvalMobile += '      <button data-id = "' + v.id + '" class="btnAddMeal btn btn-sm btn-success"><i class = "fa fa-plus"></i>&nbsp;Add to daily meal</button>';
+          retvalMobile += '      <button data-id = "' + v.id + '" class="btnViewMeal btn btn-sm btn-secondary"><i class = "fa fa-view"></i>&nbsp;More Details</button>';
+          retvalMobile += '    </div>';
+          retvalMobile += '  </div>';
+          retvalMobile += '</div>';
+          retvalMobile += '</div>';
+          retvalMobile += '</div>';
+       
+            retvalMobile += '</div>';
+            retvalMobile += '</div>';
+           
+
+        });
 
         if (tempCount < 4) {
 
           for (let i = tempCount; i < 4; i++) {
             console.log("PROC");
             retvalPC += '<div class="col-md-4"><div class="product-block" style = "border: 0px !important;"><div class="product-info"></div></div></div>';
+            //retvalMobile += '<div class="col-md-4"><div class="product-block" style = "border: 0px !important;"><div class="product-info"></div></div></div>';
           }
         }
         console.log(tempCount);
         $('#carouselPCInner').html(retvalPC);
+        $('#carouselMobileInner').html(retvalMobile);
       }).catch(function(err) {
         console.log(err);
         fireSwal('Meals', 'Failed to retrieve list of meals. Please reload the page', 'error');

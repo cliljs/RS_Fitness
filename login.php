@@ -25,7 +25,7 @@ if (isset($_GET['code'])) {
     $google_account_info = $google_oauth->userinfo->get();
 
 
-   
+
     $_SESSION['google_email'] =  $google_account_info['email'];
     $_SESSION['user_lastname'] =  $google_account_info['familyName'];
     $_SESSION['user_firstname'] =  $google_account_info['givenName'];
@@ -46,7 +46,11 @@ if (isset($_GET['code'])) {
         $_SESSION['user_fullname'] = $result['firstname'] . ' ' . $result['middlename'] . ' ' . $result['lastname'];
         $_SESSION['validated'] = 1;
         $_SESSION['is_admin'] = $result['is_admin'];
-        header('Location: index.php');
+        if ($result['is_admin'] == 1) {
+            header('Location: index.php?view=home');
+        } else {
+            header('Location: index.php?view=meal');
+        }
     }
 } else {
     //$_SESSION['error'] = "1";
@@ -126,7 +130,7 @@ class DataController
                     ?>
                     <form>
                         <h1>Login</h1>
-                        <p class = "text-muted">Login to start your session</p>
+                        <p class="text-muted">Login to start your session</p>
                         <div>
                             <a class="form-control btn btn-md btn-info" href="<?php echo $client->createAuthUrl(); ?>"><i class='fa fa-google'></i>&nbsp;Login with Google</a>
 

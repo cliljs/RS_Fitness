@@ -1,5 +1,5 @@
 <?php
-if($is_admin) exit;
+if ($is_admin) exit;
 
 ?>
 <div class="clearfix"></div>
@@ -35,19 +35,15 @@ if($is_admin) exit;
 
           </div>
 
+        </div>
+        <div id="carouselMobile" class="carousel slide d-md-none d-lg-none d-xl-none" data-ride="carousel">
 
-          <div id="carouselMobile" class="carousel slide d-md-none d-lg-none d-xl-none" data-ride="carousel">
+          <div class="carousel-inner" id="carouselMobileInner">
 
-            <div class="carousel-inner">
-
-
-            </div>
 
           </div>
 
-
         </div>
-
       </div>
 
 
@@ -95,7 +91,7 @@ if($is_admin) exit;
               </div>
             </div>
             <div class="col-auto">
-              <button id = "btnSeachMyMeals" class="btn btn-primary mb-2"><i class="fa fa-search"></i>&nbsp;Filter</button>
+              <button id="btnSeachMyMeals" class="btn btn-primary mb-2"><i class="fa fa-search"></i>&nbsp;Filter</button>
             </div>
           </div>
         </div>
@@ -142,7 +138,7 @@ if($is_admin) exit;
               </div>
               <div class="form-group row">
                 <label>Description</label>
-                <textarea readonly rows = "5" class="form-control" id="plan_description" name="plan_description"></textarea>
+                <textarea readonly rows="5" class="form-control" id="plan_description" name="plan_description"></textarea>
               </div>
 
               <div class="form-group row">
@@ -165,7 +161,7 @@ if($is_admin) exit;
                     <tr>
                       <th>Ingredient Name</th>
                       <th>Calories</th>
-                     
+
                     </tr>
                   </thead>
                   <tbody id="tblIngredientsBody">

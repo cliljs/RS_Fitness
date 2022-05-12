@@ -228,7 +228,7 @@ if(!isset($_SESSION['google_email'])){
                         }).then((result) => {
                       
                             if (result.isConfirmed) {
-                                window.location.href = home_url + 'index.php';
+                                window.location.href = home_url + 'index.php?view=meal';
                             } 
                         })
                     } else {
