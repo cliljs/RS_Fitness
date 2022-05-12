@@ -62,23 +62,23 @@ class UsersModel
     public function get_all_students()
     {
         global $db;
-        return $db->get_list("Select id,(CONCAT(lastname,', ',firstname,' ',middlename)) as fullname from {$this->base_table} where is_admin = 0 order by lastname asc",[]);
+        return $db->get_list("Select id,(CONCAT(lastname,', ',firstname,' ',middlename)) as fullname from {$this->base_table} where is_admin = 0 order by lastname asc", []);
     }
     public function get_record_meals($payload = [])
     {
         global $db;
-        return $db->get_list("Select acc.lastname,acc.firstname,acc.middlename, sm.meal_name,sm.calories_obtained from rs_student_meal sm INNER JOIN rs_users acc ON acc.id = sm.user_id where sm.meal_date = ?",[$payload['dt']]);
+        return $db->get_list("Select acc.lastname,acc.firstname,acc.middlename, sm.meal_name,sm.calories_obtained from rs_student_meal sm INNER JOIN rs_users acc ON acc.id = sm.user_id where sm.meal_date = ?", [$payload['dt']]);
     }
     public function get_record_workouts($payload = [])
     {
         global $db;
-        return $db->get_list("Select acc.lastname,acc.firstname,acc.middlename, wk.description,wk.calories_burned, wk.workout_duration from rs_workout wk INNER JOIN rs_users acc ON acc.id = wk.user_id where wk.workout_date = ?",[$payload['dt']]);
+        return $db->get_list("Select acc.lastname,acc.firstname,acc.middlename, wk.description,wk.calories_burned, wk.workout_duration from rs_workout wk INNER JOIN rs_users acc ON acc.id = wk.user_id where wk.workout_date = ?", [$payload['dt']]);
     }
     public function get_student_activities($payload = [])
     {
         global $db;
-        $result1 =  $db->get_list("Select '+' as operand, acc.lastname,acc.firstname,acc.middlename, sm.meal_name,sm.calories_obtained from rs_student_meal sm INNER JOIN rs_users acc ON acc.id = sm.user_id where sm.meal_date = ? and acc.id = ?",array_values($payload));
-        $result2 =  $db->get_list("Select '-' as operand, acc.lastname,acc.firstname,acc.middlename, wk.description,wk.calories_burned, wk.workout_duration from rs_workout wk INNER JOIN rs_users acc ON acc.id = wk.user_id where wk.workout_date = ? and acc.id = ?",array_values($payload));
+        $result1 =  $db->get_list("Select '+' as operand, acc.lastname,acc.firstname,acc.middlename, sm.meal_name,sm.calories_obtained from rs_student_meal sm INNER JOIN rs_users acc ON acc.id = sm.user_id where sm.meal_date = ? and acc.id = ?", array_values($payload));
+        $result2 =  $db->get_list("Select '-' as operand, acc.lastname,acc.firstname,acc.middlename, wk.description,wk.calories_burned, wk.workout_duration from rs_workout wk INNER JOIN rs_users acc ON acc.id = wk.user_id where wk.workout_date = ? and acc.id = ?", array_values($payload));
         $merged = array_merge($result1, $result2);
         return $merged;
     }
@@ -181,7 +181,27 @@ class UsersModel
     }
     public function update_user($payload = [], $pk = null)
     {
-        return $this->data_helper->update_row($pk, $payload);
+
+        $user_pk = ($pk == 0) ? $_SESSION['id'] : $pk;
+        $w = $payload['weight'] * 0.453592;
+        $h = $payload['height'] * 0.01;
+        $bmi = $w / ($h * $h);
+        $payload['bmi'] = $bmi;
+
+        $result = $this->data_helper->update_row($user_pk, $payload);
+      
+        if ($result) {
+            $_SESSION['user_lastname'] =  $payload['lastname'];
+            $_SESSION['user_firstname'] =  $payload['firstname'];
+            $_SESSION['user_middlename'] =  $payload['middlename'];
+            $_SESSION['user_weight'] = $payload['weight'];
+            $_SESSION['user_height'] = $payload['height'];
+            $_SESSION['user_gender'] = $payload['gender'];
+            $_SESSION['user_bmi'] = $payload['bmi'];
+            $_SESSION['user_birthdate'] = $payload['birthdate'];
+            $_SESSION['user_fullname'] = $payload['firstname'] . ' ' . $payload['middlename'] . ' ' . $payload['lastname'];
+        }
+        return $result;
     }
 
     public function remove_user($pk = null)

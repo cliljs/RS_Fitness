@@ -30,6 +30,7 @@ $is_admin = ($_SESSION['is_admin'] == 1) ? true : false;
 $current_page = (empty($_GET['view'])) ? 'home' : $_GET['view'];
 $current_page = (($is_admin) && ($current_page == 'home')) ? "admin" : $current_page;
 $current_page = ((!$is_admin) && ($current_page == 'home')) ? "meal" : $current_page;
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -202,8 +203,8 @@ $current_page = ((!$is_admin) && ($current_page == 'home')) ? "meal" : $current_
 
           <!-- sidebar menu -->
           <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
-            
-           
+
+
             <?php
             if ($is_admin) {
               echo '<div class="menu_section">';
@@ -215,7 +216,7 @@ $current_page = ((!$is_admin) && ($current_page == 'home')) ? "meal" : $current_
               echo '><a href="index.php?view=home"><i class="fa fa-home"></i>Home</a>';
 
               echo '  </li>';
-              
+
               echo '  <li ';
               if ($current_page == 'mealmgmt') echo 'class="current-page"';
               echo '><a href="index.php?view=mealmgmt"><i class="fa fa-cutlery"></i>Meal Management</a>';
@@ -234,11 +235,11 @@ $current_page = ((!$is_admin) && ($current_page == 'home')) ? "meal" : $current_
               echo '  </li>';
               echo '</ul>';
               echo '</div>';
-            } else{
+            } else {
               echo '<div class="menu_section">';
               echo '<h3>Health &amp; Fitness</h3>';
               echo '<ul class="nav side-menu">';
-          
+
               echo '<li ';
               if ($current_page == 'meal') echo 'class="current-page"';
               echo '><a href="index.php?view=meal"><i class="fa fa-cutlery"></i> Meal</a>';
@@ -316,7 +317,7 @@ $current_page = ((!$is_admin) && ($current_page == 'home')) ? "meal" : $current_
             include "frontend/views/records.php";
             break;
           case "profile":
-            include "frontend/views/profile.php";
+            include "frontend/views/personal.php";
             break;
           default:
             include "frontend/views/404.php";
@@ -938,18 +939,18 @@ $current_page = ((!$is_admin) && ($current_page == 'home')) ? "meal" : $current_
             $.each(objData, function(k, v) {
               console.log(v.operand);
               retval += '<tr>';
-            
-              if(v.operand == '+'){
+
+              if (v.operand == '+') {
                 retval += '<td><button class = "btn btn-md btn-success"><i class = "fa fa-cutlery"></i>&nbsp;Meal</button></td>';
                 retval += '<td>' + v.meal_name + '</td>';
                 retval += '<td>' + v.calories_obtained + '</td>';
-              } else{
+              } else {
                 retval += '<td><button class = "btn btn-md btn-danger"><i class = "fa fa-bicycle"></i>&nbsp;Workout</button></td>'
                 retval += '<td>' + v.workout_duration + ' - ' + v.description + '</td>';
                 retval += '<td>' + v.calories_burned + '</td>';
               }
-              
-              
+
+
               retval += '</tr>';
             });
             if (dtRpt3 != null) {
@@ -982,6 +983,57 @@ $current_page = ((!$is_admin) && ($current_page == 'home')) ? "meal" : $current_
           fireSwal('Records', 'Failed to retrieve list of students. Please reload the page', 'error');
         })
 
+      } else if (me == "profile") {
+        let bmi = calculateBMI($('#height').val(), $('#weight').val());
+        if (bmi == Number.POSITIVE_INFINITY) return;
+        $('#bmi').val(bmi);
+        $('#classification').val(clasifyBMI(bmi));
+
+        $('#weight, #height').on("keyup", function() {
+          let bmi = calculateBMI($('#height').val(), $('#weight').val());
+          if (bmi == Number.POSITIVE_INFINITY) return;
+          $('#bmi').val(bmi);
+          $('#classification').val(clasifyBMI(bmi));
+        });
+        $('#frmPersonal').on('submit', function(e) {
+          e.preventDefault();
+          let payload = {
+            firstname: $('#firstname').val(),
+            middlename: $('#middlename').val(),
+            lastname: $('#lastname').val(),
+            birthdate: $('#birthdate').val(),
+            gender: $('input[name="gender"]:checked').val(),
+            height: $('#height').val(),
+            weight: $('#weight').val(),
+            bmi: $('#bmi').val()
+          };
+          fireAjax('UsersController.php?action=update_user&id=0', payload, false).then(function(data) {
+            console.log(data);
+            let objData = $.parseJSON(data.trim()).success;
+            if (objData == 1) {
+              Swal.fire({
+                icon: 'success',
+                title: 'Personal Information',
+                text: 'Account updated successfully. Click OK to reload the page',
+                showDenyButton: false,
+                showCancelButton: false,
+                allowOutsideClick: false,
+                confirmButtonText: 'Ok'
+              }).then((result) => {
+
+                if (result.isConfirmed) {
+                  window.location.reload();
+                }
+              })
+              //fireSwal('Personal Information', 'Account updated successfully', 'success');
+            } else {
+              fireSwal('Personal Information', 'Failed to update account. Please try again', 'error');
+            }
+          }).catch(function(err) {
+            console.log(err);
+            fireSwal('Personal Information', 'Failed to update account. Please try again', 'error');
+          })
+        })
       }
     });
 

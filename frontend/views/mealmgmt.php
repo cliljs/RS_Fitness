@@ -1,3 +1,7 @@
+<?php
+if(!$is_admin) exit;
+
+?>
 <div class="clearfix"></div>
 
 <div class="x_panel mt-3">

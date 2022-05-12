@@ -1,8 +1,9 @@
+<?php
+if(!$is_admin) exit;
+
+?>
 <div class="clearfix"></div>
-<!-- slider -->
 
-
-<!-- slider -->
 <div class="x_panel mt-3">
   <div class="x_title">
     <h4><i class="fa fa-book"></i> &nbsp;Records</h4>

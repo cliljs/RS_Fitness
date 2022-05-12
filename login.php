@@ -39,6 +39,10 @@ if (isset($_GET['code'])) {
         $_SESSION['user_lastname'] =  $result['lastname'];
         $_SESSION['user_firstname'] =  $result['firstname'];
         $_SESSION['user_middlename'] =  $result['middlename'];
+        $_SESSION['user_weight'] = $result['weight'];
+        $_SESSION['user_height'] = $result['height'];
+        $_SESSION['user_gender'] = $result['gender'];
+        $_SESSION['user_birthdate'] = $result['birthdate'];
         $_SESSION['user_fullname'] = $result['firstname'] . ' ' . $result['middlename'] . ' ' . $result['lastname'];
         $_SESSION['validated'] = 1;
         $_SESSION['is_admin'] = $result['is_admin'];

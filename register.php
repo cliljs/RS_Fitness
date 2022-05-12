@@ -4,7 +4,7 @@ session_start();
 if(!isset($_SESSION['google_email'])){
   header('Location: login.php');
 }
-print_r($_SESSION);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
