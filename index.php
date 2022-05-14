@@ -607,6 +607,7 @@ if(!$is_admin && in_array($current_page,$admin_side)){
             console.log(data);
             let objData = $.parseJSON(data.trim()).data;
             $('#editMealModalLabel').attr('data-id', dataID);
+            $('#editimgPicture').attr('src', image_url + objData.plan_picture);
             $('#edit_plan_name').val(objData.plan_name);
             $('#edit_plan_description').val(objData.plan_description);
             $('#edit_plan_category').val(objData.plan_category);
