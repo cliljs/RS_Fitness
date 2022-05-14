@@ -5,41 +5,17 @@ $act = !empty($_GET["action"]) ? $_GET["action"] : null;
 
 $seeds = [
     [
-        "gmail_address" => "calilchristopher052997@gmail.com",
-        "firstname"     => "Calil Christopher",
-        "middlename"    => 'null',
-        "lastname"      => "Jaudian",
+        "gmail_address" => "rs.malofit@gmail.com",
+        "firstname"     => "RS Malofit",
+        "middlename"    => '',
+        "lastname"      => "Administrator",
         "birthdate"      => "1997-05-29",
         "gender"        => "Male",
         "height"        => 180.34,
         "weight"        => 198.41,
         "bmi"           => 45.21,
         "is_admin"      => 1
-    ],
-    [
-        "gmail_address" => "barata.bryannikko.dev@gmail.com",
-        "firstname"     => "Bryan Nikko",
-        "middlename"    => "Vitug",
-        "lastname"      => "Barata",
-        "birthdate"      => "1994-02-11",
-        "gender"        => "Male",
-        "height"        => 182.88,
-        "weight"        => 176.37,
-        "bmi"           => 40.2,
-        "is_admin"      => 1
-    ],
-    [
-        "gmail_address" => "patrick@gmail.com",
-        "firstname"     => "Ben Patrick",
-        "middlename"    => "Vitug",
-        "lastname"      => "Chua",
-        "birthdate"      => "2004-01-31",
-        "gender"        => "Male",
-        "height"        => 165.1,
-        "weight"        => 154.324,
-        "bmi"           => 30.8,
-        "is_admin"      => 1
-    ],
+    ]
 ];
 
 switch ($act) {
