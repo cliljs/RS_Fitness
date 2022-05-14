@@ -29,7 +29,7 @@ if(!isset($_SESSION['google_email'])){
     <!-- Custom Theme Style -->
     <link href="frontend/build/css/custom.min.css" rel="stylesheet">
     <link href="frontend/plugins/sweetalert2/sweetalert2.min.css" rel="stylesheet">
-
+    <link href="frontend/build/css/preloader.css" rel="stylesheet">
 <body class="nav-md">
     <div class="container body">
         <div class="main_container">
@@ -191,6 +191,7 @@ if(!isset($_SESSION['google_email'])){
     <script src="frontend/plugins/bootstrap-daterangepicker/daterangepicker.js"></script>
     <script src="frontend/plugins/sweetalert2/sweetalert2.min.js"></script>
     <!-- Custom Theme Scripts -->
+    <script src="frontend/build/js/jquery.preloader.min.js"></script>
     <script src="frontend/build/js/custom.min.js"></script>
     <script src="frontend/build/js/common.js"></script>
     <script>
