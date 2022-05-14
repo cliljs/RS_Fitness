@@ -702,6 +702,7 @@ if(!$is_admin && in_array($current_page,$admin_side)){
             console.log(data);
             let objData = $.parseJSON(data.trim()).data;
             if (objData) {
+              loadAllMeals();
               $('#mdlEditMeal').trigger('reset');
               $('#editMealModal').modal('hide');
               fireSwal('Edit Meal', 'Meal updated successfully', 'success');
@@ -1073,7 +1074,7 @@ if(!$is_admin && in_array($current_page,$admin_side)){
         let meal_taken = objData.meal_taken;
         let workout_made = objData.calories_burned;
         let merged_array = meal_taken.concat(workout_made);
-        merged_array.pop();
+      
         console.log(merged_array);
         init_calendar(merged_array);
       }).catch(function(err) {
