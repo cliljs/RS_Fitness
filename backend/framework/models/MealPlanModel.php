@@ -66,9 +66,11 @@ class MealPlanModel
         if ($file['error'] != 4) {
             $payload['edit_plan_picture'] = $common->upload($file);
             $old_image = $this->data_helper->get_row_details($pk);
+            
             if ($old_image['plan_picture']) {
-                unlink($old_image['plan_picture']);
+                unlink(UPLOAD_PATH . 'images/' . $old_image['plan_picture']);
             }
+
         }
         $edit_payload = [
             "plan_name"         =>  $payload["edit_plan_name"],
@@ -76,6 +78,11 @@ class MealPlanModel
             "plan_category"     =>  $payload["edit_plan_category"],
             "created_by"        =>  $_SESSION['id'],
         ];
+
+
+        if ($file['error'] != 4) {
+            $edit_payload['plan_picture'] =  $payload['edit_plan_picture'];
+        }
         
         $db->delete("rs_meal_ingredients where meal_id = ?", [$pk]);
         if (!empty($payload['ingredients'])) {
