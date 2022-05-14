@@ -136,7 +136,16 @@ class UsersModel
             ];
             $fields  = $common->get_insert_fields($arr);
             $last_id = $db->insert("{$this->base_table} {$fields}", array_values($arr));
-            //$_SESSION = $this->data_helper->get_row_details($last_id);
+          
+            $_SESSION['user_lastname'] =  $payload['lastname'];
+            $_SESSION['user_firstname'] =  $payload['firstname'];
+            $_SESSION['user_middlename'] =  $payload['middlename'];
+            $_SESSION['user_weight'] = $payload['weight'];
+            $_SESSION['user_height'] = $payload['height'];
+            $_SESSION['user_gender'] = $payload['gender'];
+            $_SESSION['user_birthdate'] = $payload['birthdate'];
+            $_SESSION['user_gmail'] =  $payload['gmail_address'];
+
             $_SESSION['is_admin'] = 0;
             $_SESSION['validated'] = 1;
             $_SESSION['user_fullname'] = $payload['firstname'] . ' ' . $payload['middlename'] . ' '  . $payload['lastname'];
@@ -189,7 +198,7 @@ class UsersModel
         $payload['bmi'] = $bmi;
 
         $result = $this->data_helper->update_row($user_pk, $payload);
-      
+
         if ($result) {
             $_SESSION['user_lastname'] =  $payload['lastname'];
             $_SESSION['user_firstname'] =  $payload['firstname'];
