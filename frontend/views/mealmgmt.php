@@ -152,10 +152,10 @@ if(!$is_admin) exit;
             <div class="col-md-12 col-lg-6">
               <div class="form-group">
 
-                <img class="img-fluid" id="imgPicture" name="imgPicture" src="https://via.placeholder.com/500">
+                <img class="img-fluid" id="editimgPicture" name="editimgPicture" src="https://via.placeholder.com/500">
                 <div class="input-group">
                   <div class="custom-file">
-                    <input type="file" accept=".jpg, .png, .jpeg, .bmp" class="custom-file-input" id="edit_meal_picture" name="edit_meal_picture" onchange="loadFile(event)">
+                    <input type="file" accept=".jpg, .png, .jpeg, .bmp" class="custom-file-input" id="edit_meal_picture" name="edit_meal_picture" onchange="loadFile2(event)">
                     <label class="custom-file-label" for="meal_picture">Choose Image</label>
                   </div>
 

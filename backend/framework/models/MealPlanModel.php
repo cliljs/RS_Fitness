@@ -62,6 +62,7 @@ class MealPlanModel
     public function update_mealplan($pk, $payload, $file)
     {
         global $db, $common, $ingredient_model;
+       
         if ($file['error'] != 4) {
             $payload['edit_plan_picture'] = $common->upload($file);
             $old_image = $this->data_helper->get_row_details($pk);

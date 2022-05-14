@@ -614,6 +614,7 @@ if(!$is_admin && in_array($current_page,$admin_side)){
               console.log(data2);
               let objData2 = $.parseJSON(data2.trim()).data;
               let retval = '';
+              edit_ingredients_arr = [];
               $.each(objData2, function(k, v) {
                 edit_ingredients_arr.push({
                   name: v.ingredient_name,
@@ -1053,7 +1054,13 @@ if(!$is_admin && in_array($current_page,$admin_side)){
         URL.revokeObjectURL(output.src)
       }
     };
-
+    var loadFile2 = function(event) {
+      var output = document.getElementById('editimgPicture');
+      output.src = URL.createObjectURL(event.target.files[0]);
+      output.onload = function() {
+        URL.revokeObjectURL(output.src)
+      }
+    };
     function plotCalendar(m, y) {
 
       fireAjax('UsersController.php?action=get_user_history&month=' + m + '&year=' + y, '', false).then(function(data) {
