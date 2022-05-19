@@ -1,6 +1,8 @@
 ID: 67252877907-o6gl10gb0o3vfljoeme17qqcoffu5b57.apps.googleusercontent.com
 SECRET: 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
 
+ID: 939376582577-7e8ed2q51ti1a8n0d0bfu7hntpk8rp4g.apps.googleusercontent.com
+SECRET: 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
 GMAIL:
 rs.malofit@gmail.com
 rs.malofit2022*

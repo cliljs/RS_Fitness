@@ -24,19 +24,20 @@ if ($time >= "06:00:00" && $time < "09:00:00") {
   $meal_type = "Midnight Snack";
 }
 
-
+$current_page = '';
 $role = ($_SESSION['is_admin'] == 1) ? 'Administrator' : 'Standard User';
 $is_admin = ($_SESSION['is_admin'] == 1) ? true : false;
+
 $current_page = (empty($_GET['view'])) ? '404' : $_GET['view'];
 
-$admin_side = ["records","home","usermgmt","mealmgmt"];
-$user_side = ["meal","workout","history"];
+$admin_side = ["records", "home", "usermgmt", "mealmgmt"];
+$user_side = ["meal", "workout", "history"];
 
-if($is_admin && in_array($current_page,$user_side)){
+if ($is_admin && in_array($current_page, $user_side)) {
   $current_page = "404";
 }
 
-if(!$is_admin && in_array($current_page,$admin_side)){
+if (!$is_admin && in_array($current_page, $admin_side)) {
   $current_page = "404";
 }
 
@@ -215,6 +216,7 @@ if(!$is_admin && in_array($current_page,$admin_side)){
 
 
             <?php
+            
             if ($is_admin) {
               echo '<div class="menu_section">';
               echo '<h3>Admin</h3>';
@@ -998,6 +1000,11 @@ if(!$is_admin && in_array($current_page,$admin_side)){
       } else if (me == "profile") {
         let bmi = calculateBMI($('#height').val(), $('#weight').val());
         if (bmi == Number.POSITIVE_INFINITY) return;
+        if (isNaN(bmi)) {
+          $('#bmi').val('');
+          $('#classification').val('');
+          return;
+        }
         $('#bmi').val(bmi);
         $('#classification').val(clasifyBMI(bmi));
 
@@ -1063,6 +1070,7 @@ if(!$is_admin && in_array($current_page,$admin_side)){
         URL.revokeObjectURL(output.src)
       }
     };
+
     function plotCalendar(m, y) {
 
       fireAjax('UsersController.php?action=get_user_history&month=' + m + '&year=' + y, '', false).then(function(data) {
@@ -1074,7 +1082,7 @@ if(!$is_admin && in_array($current_page,$admin_side)){
         let meal_taken = objData.meal_taken;
         let workout_made = objData.calories_burned;
         let merged_array = meal_taken.concat(workout_made);
-      
+
         console.log(merged_array);
         init_calendar(merged_array);
       }).catch(function(err) {
@@ -1230,7 +1238,7 @@ if(!$is_admin && in_array($current_page,$admin_side)){
           }
 
         });
-      
+
         //mobile
         $.each(objData, function(k, v) {
           desc = v.plan_description;
@@ -1260,10 +1268,10 @@ if(!$is_admin && in_array($current_page,$admin_side)){
           retvalMobile += '</div>';
           retvalMobile += '</div>';
           retvalMobile += '</div>';
-       
-            retvalMobile += '</div>';
-            retvalMobile += '</div>';
-           
+
+          retvalMobile += '</div>';
+          retvalMobile += '</div>';
+
 
         });
 

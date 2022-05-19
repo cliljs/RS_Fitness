@@ -6,11 +6,10 @@ require_once 'backend/autoload.php';
 $client = new Google_Client();
 
 
-$client->setClientId('67252877907-o6gl10gb0o3vfljoeme17qqcoffu5b57.apps.googleusercontent.com');
+$client->setClientId('939376582577-7e8ed2q51ti1a8n0d0bfu7hntpk8rp4g.apps.googleusercontent.com');
+$client->setClientSecret('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');
 
-$client->setClientSecret('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');
-
-$client->setRedirectUri('http://localhost/rs_fitness/login.php');
+$client->setRedirectUri('http://localhost/malofit/login.php');
 
 $client->addScope("email");
 $client->addScope("profile");

@@ -1,10 +1,17 @@
 <?php
 
 session_start();
-if(!isset($_SESSION['google_email'])){
-  header('Location: login.php');
+if (!isset($_SESSION['google_email'])) {
+    header('Location: login.php');
 }
-
+if (isset($_SESSION['validated'])) {
+    if($_SESSION['is_admin'] == 1){
+        header('Location: index.php?view=home');
+    } else{
+        header('Location: index.php?view=meal');
+    }
+    
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -30,6 +37,7 @@ if(!isset($_SESSION['google_email'])){
     <link href="frontend/build/css/custom.min.css" rel="stylesheet">
     <link href="frontend/plugins/sweetalert2/sweetalert2.min.css" rel="stylesheet">
     <link href="frontend/build/css/preloader.css" rel="stylesheet">
+
 <body class="nav-md">
     <div class="container body">
         <div class="main_container">
@@ -79,7 +87,7 @@ if(!isset($_SESSION['google_email'])){
                                             <label class="col-form-label col-md-3 col-sm-3 label-align" for="firstname">First Name <span class="required">*</span>
                                             </label>
                                             <div class="col-md-6 col-sm-6 ">
-                                                <input type="text" id="firstname" name="firstname" required="required" class="form-control has-feedback-left" value = "<?php echo $_SESSION['user_firstname'] ?>">
+                                                <input type="text" id="firstname" name="firstname" required="required" class="form-control has-feedback-left" value="<?php echo $_SESSION['user_firstname'] ?>">
                                                 <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
                                             </div>
                                         </div>
@@ -87,7 +95,7 @@ if(!isset($_SESSION['google_email'])){
                                             <label class="col-form-label col-md-3 col-sm-3 label-align" for="lastname">Last Name <span class="required">*</span>
                                             </label>
                                             <div class="col-md-6 col-sm-6 ">
-                                                <input type="text" id="lastname" name="lastname" required="required" class="form-control has-feedback-left" value = "<?php echo $_SESSION['user_lastname'] ?>">
+                                                <input type="text" id="lastname" name="lastname" required="required" class="form-control has-feedback-left" value="<?php echo $_SESSION['user_lastname'] ?>">
                                                 <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
                                             </div>
                                         </div>
@@ -115,8 +123,8 @@ if(!isset($_SESSION['google_email'])){
                                             <label class="col-form-label col-md-3 col-sm-3 label-align">Date Of Birth <span class="required">*</span>
                                             </label>
                                             <div class="col-md-6 col-sm-6 ">
-                                                <input id="birthdate" name="birthdate" class="date-picker form-control has-feedback-left" placeholder="yyyy-MM-dd" type="date" required="required" >
-                                               
+                                                <input id="birthdate" name="birthdate" class="date-picker form-control has-feedback-left" placeholder="yyyy-MM-dd" type="date" required="required">
+
                                                 <span class="fa fa-calendar form-control-feedback left" aria-hidden="true"></span>
                                             </div>
                                         </div>
@@ -196,9 +204,15 @@ if(!isset($_SESSION['google_email'])){
     <script src="frontend/build/js/common.js"></script>
     <script>
         $(function() {
-            $('#weight, #height').on("keyup",function(){
-                let bmi = calculateBMI($('#height').val(),$('#weight').val());
-                if(bmi == Number.POSITIVE_INFINITY) return;
+            $('#weight, #height').on("keyup", function() {
+
+                let bmi = calculateBMI($('#height').val(), $('#weight').val());
+                if (bmi == Number.POSITIVE_INFINITY) return;
+                if (isNaN(bmi)) {
+                    $('#bmi').val('');
+                    $('#classification').val('');
+                    return;
+                }
                 $('#bmi').val(bmi);
                 $('#classification').val(clasifyBMI(bmi));
             });
@@ -219,18 +233,18 @@ if(!isset($_SESSION['google_email'])){
                     let objData = $.parseJSON(data.trim()).success;
                     if (objData == 1) {
                         Swal.fire({
-                            icon:'success',
+                            icon: 'success',
                             title: 'Registration',
-                            text:'Account updated successfully. Click OK to proceed',
+                            text: 'Account updated successfully. Click OK to proceed',
                             showDenyButton: false,
                             showCancelButton: false,
-                            allowOutsideClick:false,
+                            allowOutsideClick: false,
                             confirmButtonText: 'Ok'
                         }).then((result) => {
-                      
+
                             if (result.isConfirmed) {
                                 window.location.href = home_url + 'index.php?view=meal';
-                            } 
+                            }
                         })
                     } else {
                         fireSwal('Registration', 'Failed to register account. Please try again', 'error');

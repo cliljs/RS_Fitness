@@ -1,5 +1,5 @@
 //let home_url = "https://www.sdpmonitoring.com/WCC_BRY/";
-let home_url = "http://localhost/rs_fitness/";
+let home_url = "http://localhost/malofit/";
 let image_url = home_url + "backend/framework/uploads/images/";
 let base_url = home_url + "backend/framework/controllers/";
 let months = ["January", "February", "March", "April", "May", "June",
