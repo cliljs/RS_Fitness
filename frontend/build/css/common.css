@@ -1,0 +1,100 @@
+.form-control-borderless {
+    border: none;
+  }
+
+  .form-control-borderless:hover,
+  .form-control-borderless:active,
+  .form-control-borderless:focus {
+    border: none;
+    outline: none;
+    box-shadow: none;
+  }
+
+  .product-info {
+    padding: 15px !important;
+
+  }
+
+  .product-block {
+
+    border: 1px #2095a5a6 solid !important;
+  }
+
+  .site_title {
+    line-height: 0px !important;
+    height: 25px !important;
+    margin-top: 25px;
+    overflow: visible !important;
+  }
+
+  .site_title2 {
+    line-height: 15px !important;
+    height: 25px !important;
+    margin-top: 5px;
+    word-wrap: break-word;
+    white-space: initial;
+    font-weight: 200;
+    font-size: 14px;
+    width: 100%;
+    color: #ecf0f1 !important;
+    margin-left: 0 !important;
+    line-height: 59px;
+    display: block;
+
+    margin: 0;
+    padding-left: 10px;
+  }
+
+  td,
+  th {
+
+    vertical-align: middle !important;
+  }
+
+
+  .counter-box {
+    display: block;
+    background: #f6f6f6;
+    padding: 40px 20px 37px;
+    text-align: center
+  }
+
+  .counter-box p {
+    margin: 5px 0 0;
+    padding: 0;
+    color: #909090;
+    font-size: 18px;
+    font-weight: 500
+  }
+
+  .counter-box i {
+    font-size: 60px;
+    margin: 0 0 15px;
+    color: #d2d2d2
+  }
+
+  .counter {
+    display: block;
+    font-size: 32px;
+    font-weight: 700;
+    color: #666;
+    line-height: 28px
+  }
+
+  .counter-box.colored {
+    background: #3acf87;
+  }
+
+  .counter-box.colored p,
+  .counter-box.colored i,
+  .counter-box.colored .counter {
+    color: #fff
+  }
+
+  .profile_info {
+    padding-top: 20px !important;
+  }
+
+  .profile_info span {
+    line-height: 20px !important;
+  }
