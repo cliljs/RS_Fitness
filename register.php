@@ -111,7 +111,7 @@ if (isset($_SESSION['validated'])) {
                                             <div class="col-md-6 col-sm-6 ">
                                                 <div id="gender" class="btn-group" data-toggle="buttons">
                                                     <label class="btn btn-secondary" data-toggle-class="btn-primary" data-toggle-passive-class="btn-secondary">
-                                                        <input type="radio" name="gender" value="male" class="join-btn"> &nbsp; Male &nbsp;
+                                                        <input type="radio" name="gender" value="male" class="join-btn" required="required"> &nbsp; Male &nbsp;
                                                     </label>
                                                     <label class="btn btn-primary" data-toggle-class="btn-primary" data-toggle-passive-class="btn-secondary">
                                                         <input type="radio" name="gender" value="female" class="join-btn"> Female
@@ -143,7 +143,7 @@ if (isset($_SESSION['validated'])) {
                                             <label class="col-form-label col-md-3 col-sm-3 label-align" for="weight">Weight <span class="required">*</span>
                                             </label>
                                             <div class="col-md-6 col-sm-6 ">
-                                                <input type="number" id="weight" name="weight" required="required" class="form-control has-feedback-left" placeholder="Weight in pounds(lbs)">
+                                                <input type="number" id="weight" name="weight" required="required" class="form-control has-feedback-left" placeholder="Weight in pounds(lbs)"  required="required">
                                                 <span class="fa fa-bar-chart form-control-feedback left" aria-hidden="true"></span>
                                             </div>
                                         </div>
@@ -152,7 +152,7 @@ if (isset($_SESSION['validated'])) {
                                             <label class="col-form-label col-md-3 col-sm-3 label-align" for="height">Height <span class="required">*</span>
                                             </label>
                                             <div class="col-md-6 col-sm-6 ">
-                                                <input type="number" id="height" name="height" required="required" class="form-control has-feedback-left" placeholder="Height in centimeters(cm)">
+                                                <input type="number" id="height" name="height" required="required" class="form-control has-feedback-left" placeholder="Height in centimeters(cm)"  required="required">
                                                 <span class="fa fa-bar-chart form-control-feedback left" aria-hidden="true"></span>
                                             </div>
                                         </div>
@@ -230,8 +230,8 @@ if (isset($_SESSION['validated'])) {
 
                 fireAjax('UsersController.php?action=login_user', payload, false).then(function(data) {
                     console.log(data);
-                    let objData = $.parseJSON(data.trim()).success;
-                    if (objData == 1) {
+                    let objData = $.parseJSON(data.trim()).data;
+                    if (objData == true) {
                         Swal.fire({
                             icon: 'success',
                             title: 'Registration',

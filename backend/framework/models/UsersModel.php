@@ -116,43 +116,50 @@ class UsersModel
     {
         global $db, $common;
 
-        $payload['gmail_address'] = $_SESSION['google_email'];
+        try {
+            $payload['gmail_address'] = $_SESSION['google_email'];
 
-        $has_user = $this->get_user_gmail($payload['gmail_address']);
-        if (empty($has_user)) {
-            $w = $payload['weight'] * 0.453592;
-            $h = $payload['height'] * 0.01;
-            $bmi = $w / ($h * $h);
-            $arr = [
-                "gmail_address" => $payload['gmail_address'],
-                "firstname"     => $payload['firstname'],
-                "middlename"    => $payload['middlename'],
-                "lastname"      => $payload['lastname'],
-                "birthdate"     => $payload['birthdate'],
-                "gender"        => $payload['gender'],
-                "height"        => $payload['height'],
-                "weight"        => $payload['weight'],
-                "bmi"           => $bmi
-            ];
-            $fields  = $common->get_insert_fields($arr);
-            $last_id = $db->insert("{$this->base_table} {$fields}", array_values($arr));
-          
-            $_SESSION['user_lastname'] =  $payload['lastname'];
-            $_SESSION['user_firstname'] =  $payload['firstname'];
-            $_SESSION['user_middlename'] =  $payload['middlename'];
-            $_SESSION['user_weight'] = $payload['weight'];
-            $_SESSION['user_height'] = $payload['height'];
-            $_SESSION['user_gender'] = $payload['gender'];
-            $_SESSION['user_birthdate'] = $payload['birthdate'];
-            $_SESSION['user_gmail'] =  $payload['gmail_address'];
+            $has_user = $this->get_user_gmail($payload['gmail_address']);
+            if (empty($has_user)) {
+                foreach ($payload as $key => $value) {
+                    if($key == 'middlename') continue;
+                    if($value == '') return false;
+                }
+                $w = $payload['weight'] * 0.453592;
+                $h = $payload['height'] * 0.01;
+                $bmi = $w / ($h * $h);
+                $arr = [
+                    "gmail_address" => $payload['gmail_address'],
+                    "firstname"     => $payload['firstname'],
+                    "middlename"    => $payload['middlename'],
+                    "lastname"      => $payload['lastname'],
+                    "birthdate"     => $payload['birthdate'],
+                    "gender"        => $payload['gender'],
+                    "height"        => $payload['height'],
+                    "weight"        => $payload['weight'],
+                    "bmi"           => $bmi
+                ];
+                $fields  = $common->get_insert_fields($arr);
+                $last_id = $db->insert("{$this->base_table} {$fields}", array_values($arr));
 
-            $_SESSION['is_admin'] = 0;
-            $_SESSION['validated'] = 1;
-            $_SESSION['user_fullname'] = $payload['firstname'] . ' ' . $payload['middlename'] . ' '  . $payload['lastname'];
-            $_SESSION['id'] = $last_id;
-            return $last_id > 0 ? true : false;
+                $_SESSION['user_lastname'] =  $payload['lastname'];
+                $_SESSION['user_firstname'] =  $payload['firstname'];
+                $_SESSION['user_middlename'] =  $payload['middlename'];
+                $_SESSION['user_weight'] = $payload['weight'];
+                $_SESSION['user_height'] = $payload['height'];
+                $_SESSION['user_gender'] = $payload['gender'];
+                $_SESSION['user_birthdate'] = $payload['birthdate'];
+                $_SESSION['user_gmail'] =  $payload['gmail_address'];
+
+                $_SESSION['is_admin'] = 0;
+                $_SESSION['validated'] = 1;
+                $_SESSION['user_fullname'] = $payload['firstname'] . ' ' . $payload['middlename'] . ' '  . $payload['lastname'];
+                $_SESSION['id'] = $last_id;
+                return $last_id > 0 ? true : false;
+            }
+        } catch (\Throwable $th) {
+            return false;
         }
-        return false;
     }
     public function add_other_user($payload = [])
     {
