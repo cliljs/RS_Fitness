@@ -125,6 +125,7 @@ class UsersModel
                     if($key == 'middlename') continue;
                     if($value == '') return false;
                 }
+                if(!array_key_exists("gender",$payload)) return false;
                 $w = $payload['weight'] * 0.453592;
                 $h = $payload['height'] * 0.01;
                 $bmi = $w / ($h * $h);
