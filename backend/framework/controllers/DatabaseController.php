@@ -5,10 +5,10 @@ class DatabaseController
 
     private $conn = null;
     public function __construct(
-        $host    = "127.0.0.1",
+        $host    = "chalifoux.iad1-mysql-e2-1a.dreamhost.com",
         $db_name = "fitness_app",
-        $user    = "root",
-        $pass    = ""
+        $user    = "rs_fitness",
+        $pass    = "C4lilJ4udian"
     ) {
         try {
             $this->conn = new mysqli($host, $user, $pass, $db_name);
